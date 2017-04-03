@@ -14,8 +14,6 @@ main
 					Delay_1us
 					Delay_5500us
 					Delay_50us
-		Div_16x16_S
-			Div_16x16_S_L
 		Lcd_Chr
 			Lcd_Cmd
 				Delay_1us

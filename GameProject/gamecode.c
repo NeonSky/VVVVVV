@@ -24,6 +24,7 @@ void main() {
 }
 
 void update() {
+
 }
 
 int i, j;
@@ -31,10 +32,18 @@ void initialize() {
   initPIC();
   initLCD();
 
-  for(i = 1; i <= 4; i++) {
-    for(j = 1; j <= 20; j++) {
-      Lcd_Chr(i, j, j%4);
-    }
+  for(i = 1; i <= 10; i++) {
+    Lcd_Chr(1, i, 0);
+    Lcd_Chr(2, i, 1);
+    Lcd_Chr(3, i, 2);
+    Lcd_Chr(4, i, 3);
+  }
+  
+  for(i = 11; i <= 20; i++) {
+    Lcd_Chr(1, i, 4);
+    Lcd_Chr(2, i, 5);
+    Lcd_Chr(3, i, 6);
+    Lcd_Chr(4, i, 'V');
   }
 }
 
@@ -56,71 +65,81 @@ void initLCD() {
   Lcd_Cmd(_LCD_CLEAR);
   Lcd_Cmd(_LCD_CURSOR_OFF);
 
-  LCD_RS = 0;
-  LCD_Cmd(64);
-  LCD_RS = 1;
+  Lcd_RS = 0;
+  Lcd_Cmd(64);
+  Lcd_RS = 1;
 
   // Player, face-up_upper
-  LCD_Chr_Cp(0b00001010);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00010001);
-  LCD_Chr_Cp(0b00001110);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00001010);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00010001);
+  Lcd_Chr_Cp(0b00001110);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
 
   // Player, face-up_lower
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00001010);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00010001);
-  LCD_Chr_Cp(0b00001110);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00001010);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00010001);
+  Lcd_Chr_Cp(0b00001110);
+  
+  // Player, face-down_upper
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00001110);
+  Lcd_Chr_Cp(0b00010001);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00001010);
 
   // Player, face-down_lower
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00001110);
-  LCD_Chr_Cp(0b00010001);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00001010);
+  Lcd_Chr_Cp(0b00001110);
+  Lcd_Chr_Cp(0b00010001);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00001010);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
 
-  // Player, face-down_upper
-  LCD_Chr_Cp(0b00001110);
-  LCD_Chr_Cp(0b00010001);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00001010);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
+  // Block
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
 
   // Half block, face-up
-  LCD_Chr_Cp(0b00011111);
-  LCD_Chr_Cp(0b00011111);
-  LCD_Chr_Cp(0b00011111);
-  LCD_Chr_Cp(0b00011111);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
 
   // Half block, face-down
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00000000);
-  LCD_Chr_Cp(0b00011111);
-  LCD_Chr_Cp(0b00011111);
-  LCD_Chr_Cp(0b00011111);
-  LCD_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
 
-  LCD_RS = 0;
-  LCD_Cmd(128);
-  LCD_RS = 1;
+  Lcd_RS = 0;
+  Lcd_Cmd(128);
+  Lcd_RS = 1;
 }
