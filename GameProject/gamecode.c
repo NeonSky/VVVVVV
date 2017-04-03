@@ -38,7 +38,7 @@ void initialize() {
     Lcd_Chr(3, i, 2);
     Lcd_Chr(4, i, 3);
   }
-  
+
   for(i = 11; i <= 20; i++) {
     Lcd_Chr(1, i, 4);
     Lcd_Chr(2, i, 5);
@@ -88,7 +88,7 @@ void initLCD() {
   Lcd_Chr_Cp(0b00000000);
   Lcd_Chr_Cp(0b00010001);
   Lcd_Chr_Cp(0b00001110);
-  
+
   // Player, face-down_upper
   Lcd_Chr_Cp(0b00000000);
   Lcd_Chr_Cp(0b00000000);
@@ -137,6 +137,26 @@ void initLCD() {
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+
+  // Spike upper
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00001110);
+  Lcd_Chr_Cp(0b00000100);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+
+  // Spike lower
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000100);
+  Lcd_Chr_Cp(0b00001110);
   Lcd_Chr_Cp(0b00011111);
 
   Lcd_RS = 0;
