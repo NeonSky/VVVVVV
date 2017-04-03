@@ -157,6 +157,26 @@ void initLCD() {
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
 
+  // Spike upper
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00001110);
+  Lcd_Chr_Cp(0b00000100);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+
+  // Spike lower
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000100);
+  Lcd_Chr_Cp(0b00001110);
+  Lcd_Chr_Cp(0b00011111);
+
   Lcd_RS = 0;
   Lcd_Cmd(128);
   Lcd_RS = 1;
