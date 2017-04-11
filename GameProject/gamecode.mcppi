@@ -15,6 +15,9 @@ Value=0
 Value=2000
 [EEPROM_DEFINITION]
 Value=
+[EXPANDED NODES]
+Node1=Sources
+Count=1
 [FILES]
 Count=1
 File0=gamecode.c
@@ -33,10 +36,10 @@ Count=0
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
-Count=3
-Path0=C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\defs\
-Path1=C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\
-Path2=C:\Users\Deltagare\Documents\GitHub\VVVVVV\GameProject\
+Count=4
+Path0=C:\users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Defs\
+Path1=C:\users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\
+Path2=Z:\home\batman\git\VVVVVV\GameProject\
 [HEADER_PATH]
 Count=0
 [HEADERS]
@@ -88,6 +91,5 @@ File39=Time
 File40=TouchPanel
 File41=Trigonometry
 File42=UART
-[EXPANDED NODES]
-Node1=Sources
-Count=1
+[EXPANDED_NODES]
+Count=0

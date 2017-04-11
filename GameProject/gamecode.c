@@ -21,11 +21,11 @@ sbit rightBtn at PORTC.B7;
 #define lcdHeight 4
 
 
-typedef struct Player {
-  char x, y;
-  char isFaceUp, isAirborne;
-} player;
-
+struct Player {
+  char x, y, isFaceUp, isAirborne;
+};
+typedef struct Player Player;
+Player player;
 
 enum Block {
   undefined = -1,
@@ -40,7 +40,7 @@ enum Block {
 };
 
 // Levels
-char levels[2][lcdHeight][lcdWidth] = {
+char levels[1][8][lcdWidth] = {
   // Level 1
  {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
   {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -52,12 +52,8 @@ char levels[2][lcdHeight][lcdWidth] = {
   {0,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0},
 
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
-  {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}},
+  {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}}
   // Level 2
- {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}},
 };
 
 static const char numberTiles = 2;
@@ -82,6 +78,22 @@ static const char tiles[numberTiles][lcdCharLength] = {
    0b00011111}
 };
 
+
+char curLevel = 0;
+
+// Loop variables
+int i, j;
+
+void initialize();
+void initPIC();
+void initLCD();
+void initGame();
+void loadLevel(char);
+void update();
+
+char getBlockId(char, char);
+void checkAirborne();
+
 void updatePlayerChar(char id1, char id2) {
   char combinedTile[lcdCharLength];
   for(i = 0; i < lcdCharLength; i++) {
@@ -96,50 +108,38 @@ void updatePlayerChar(char id1, char id2) {
   Lcd_RS = 1;
 }
 
-char curLevel = 0;
-
-// Loop variables
-int i, j;
-
-void initialize();
-void initPIC();
-void initLCD();
-void loadLevel(char);
-void update();
-
-
 void main() {
   initialize();
   loadLevel(0);
   while(1) { update(); }
 }
 
-char getBlock(char x, char y) {
+char getBlockId(char x, char y) {
   if(x < 0 || x > lcdWidth || y < 0 || y > lcdHeight) { return -1; }
   return levels[curLevel][y][x];
 }
 
 void checkAirborne() {
-  char offset = player.isFaceUp ? -1 : 1;
-  char below[8] = getBlock(player.x, player.y+offset);
-  if(below == Block.air ||
-    (below == Block.spikeU && isFaceUp) ||
-    (below == Block.spikeD && !isFaceUp)) {
-    player.isAirborne = true;
+  short offset = player.isFaceUp ? -1 : 1;
+  char below = getBlockId(player.x, player.y+offset);
+  if(below == air ||
+    (below == spikeU && player.isFaceUp == 1) ||
+    (below == spikeD && player.isFaceUp == 0)) {
+    //player.isAirborne = 1;
   }
-  player.isAirborne = false;
+  player.isAirborne = 0;
 }
 
 void update() {
   /*checkAirborne();
   if(!player.isAirborne) {
     if(leftBtn) {
-      if(getBlock(player.x-1, player.y) == Block.air) {
+      if(getBlock(player.x-1, player.y) == air) {
         player.x--;
       }
     }
     else if(rightBtn) {
-      if(getBlock(player.x+1, player.y) == Block.air) {
+      if(getBlock(player.x+1, player.y) == air) {
         player.x++;
       }
     }
@@ -151,8 +151,8 @@ void update() {
   //checkCurTile(); // Check for goal, spikes etc.*/
 
   Lcd_Cmd(_LCD_CLEAR);
-  updatePlayerChar(1);
-  Lcd_Chr(1, 1);
+  updatePlayerChar(0, 1);
+  Lcd_Chr(1, 1, 0);
 
   delay_ms(100);
 }
@@ -160,7 +160,7 @@ void update() {
 void initialize() {
   initPIC();
   initLCD();
-  initGame();
+  //initGame();
 }
 
 void loadLevel(char levelIndex) {
@@ -171,11 +171,12 @@ void loadLevel(char levelIndex) {
   }
 }
 
+/*
 void initGame() {
-  player.x = player.y = player.isAirborne = 0;
+  player.isAirborne = 0;
   player.isFaceUp = 1;
 }
-
+  */
 void initPIC() {
   OSCCON = 0b01110111; // 8 MHz
   ANSEL = 0b00000000;
