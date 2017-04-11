@@ -17,6 +17,7 @@ sbit gravityBtn at PORTC.B5;
 sbit leftBtn at PORTC.B6;
 sbit rightBtn at PORTC.B7;
 
+#define levelCount 2
 #define lcdWidth 20
 #define lcdHeight 4
 
@@ -41,7 +42,7 @@ enum Block {
 };
 
 // Levels
-/*char levels[1][8][lcdWidth] = {
+static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
   // Level 1
  {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
   {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -55,7 +56,7 @@ enum Block {
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
   {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}}
   // Level 2
-}; */
+};
 
 static const char numberTiles = 2;
 static const char lcdCharLength = 8;
@@ -91,11 +92,11 @@ void initLCD();
 void initGame();
 void loadLevel(char);
 void update();
-
+void combineTile();
 char getBlockId(char, char);
 void checkAirborne();
 
-void updatePlayerChar(char id1, char id2) {
+void combineTile(char id1, char id2) {
   char combinedTile[lcdCharLength];
   for(i = 0; i < lcdCharLength; i++) {
     combinedTile[i] = tiles[id1][i] | tiles[id2][i];
@@ -169,7 +170,7 @@ void initialize() {
 void loadLevel(char levelIndex) {
   for(i = 1; i <= lcdHeight; i++) {
     for(j = 1; j <= lcdWidth; j++) {
-      //Lcd_Chr(i, j, levels[levelIndex][i][j]);
+      comineTiles(levels[levelIndex][2*i][j], levels[levelIndex][2*i+1][j]);
       Lcd_Chr(i, j, 0);
     }
   }
