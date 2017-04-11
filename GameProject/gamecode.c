@@ -22,7 +22,8 @@ sbit rightBtn at PORTC.B7;
 
 
 struct Player {
-  char x, y, isFaceUp, isAirborne;
+  char x, y, isAirborne;
+  short isFaceUp;
 };
 typedef struct Player Player;
 Player player;
@@ -40,7 +41,7 @@ enum Block {
 };
 
 // Levels
-char levels[1][8][lcdWidth] = {
+/*char levels[1][8][lcdWidth] = {
   // Level 1
  {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
   {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -54,7 +55,7 @@ char levels[1][8][lcdWidth] = {
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
   {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}}
   // Level 2
-};
+}; */
 
 static const char numberTiles = 2;
 static const char lcdCharLength = 8;
@@ -114,14 +115,16 @@ void main() {
   while(1) { update(); }
 }
 
-char getBlockId(char x, char y) {
+/*char getBlockId(char x, char y) {
   if(x < 0 || x > lcdWidth || y < 0 || y > lcdHeight) { return -1; }
   return levels[curLevel][y][x];
-}
+}*/
 
 void checkAirborne() {
-  short offset = player.isFaceUp ? -1 : 1;
-  char below = getBlockId(player.x, player.y+offset);
+  short offset;
+  char below;
+  offset = player.isFaceUp == 1 ? -1 : 1;
+  below = getBlockId(player.x, player.y+offset);
   if(below == air ||
     (below == spikeU && player.isFaceUp == 1) ||
     (below == spikeD && player.isFaceUp == 0)) {
@@ -166,7 +169,8 @@ void initialize() {
 void loadLevel(char levelIndex) {
   for(i = 1; i <= lcdHeight; i++) {
     for(j = 1; j <= lcdWidth; j++) {
-      Lcd_Chr(i, j, levels[levelIndex][i][j]);
+      //Lcd_Chr(i, j, levels[levelIndex][i][j]);
+      Lcd_Chr(i, j, 0);
     }
   }
 }
