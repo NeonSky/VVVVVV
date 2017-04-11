@@ -57,9 +57,10 @@ enum Block {
   // Level 2
 }; */
 
-static const char numberTiles = 2;
 static const char lcdCharLength = 8;
-static const char tiles[numberTiles][lcdCharLength] = {
+static const char tiles[][lcdCharLength] = {
+
+  // Player, face-up_upper
   {0b00001010,
    0b00000000,
    0b00010001,
@@ -69,6 +70,47 @@ static const char tiles[numberTiles][lcdCharLength] = {
    0b00000000,
    0b00000000},
 
+  // Player, face-up_lower
+  {0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00001010,
+   0b00000000,
+   0b00010001,
+   0b00001110},
+
+  // Player, face-down_upper
+  {0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00001110,
+   0b00010001,
+   0b00000000,
+   0b00001010},
+
+  // Player, face-down_lower
+  {0b00001110,
+   0b00010001,
+   0b00000000,
+   0b00001010,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000},
+
+  // Half block, upper
+  {0b00011111,
+   0b00011111,
+   0b00011111,
+   0b00011111,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000},
+
+  // Half block, lower
   {0b00000000,
    0b00000000,
    0b00000000,
@@ -76,9 +118,30 @@ static const char tiles[numberTiles][lcdCharLength] = {
    0b00011111,
    0b00011111,
    0b00011111,
-   0b00011111}
-};
+   0b00011111},
 
+  // Spike, upper
+  {0b00011111,
+   0b00001110,
+   0b00000100,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000},
+
+  // Spike, lower
+  {0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000100,
+   0b00001110,
+   0b00011111}
+   
+};
+static const char numberTiles = sizeof(tiles)/sizeof(tiles[0]);
 
 char curLevel = 0;
 
@@ -208,7 +271,7 @@ void initLCD() {
   }
 
   // Player, face-up_upper
-  Lcd_Chr_Cp(0b00001010);
+  /*Lcd_Chr_Cp(0b00001010);
   Lcd_Chr_Cp(0b00000000);
   Lcd_Chr_Cp(0b00010001);
   Lcd_Chr_Cp(0b00001110);
@@ -248,14 +311,14 @@ void initLCD() {
   Lcd_Chr_Cp(0b00000000);
 
   // Block
-  /*Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);*/
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
 
   // Half block, upper
   Lcd_Chr_Cp(0b00011111);
@@ -295,7 +358,7 @@ void initLCD() {
   Lcd_Chr_Cp(0b00000000);
   Lcd_Chr_Cp(0b00000100);
   Lcd_Chr_Cp(0b00001110);
-  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111); */
 
   Lcd_RS = 0;
   Lcd_Cmd(128);
