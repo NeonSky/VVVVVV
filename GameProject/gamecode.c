@@ -12,24 +12,69 @@ sbit LCD_D5_Direction at TRISB1_bit;
 sbit LCD_D6_Direction at TRISB2_bit;
 sbit LCD_D7_Direction at TRISB3_bit;
 
+// Player Inputs
+sbit gravityBtn at PORTC.B5;
+sbit leftBtn at PORTC.B6;
+sbit rightBtn at PORTC.B7;
+
+#define lcdWidth 20
+#define lcdHeight 4
+
+
 typedef struct Player {
-  int x = 0, y = 0;
-  bool isFaceUp = true;
+  char x, y;
+  char isFaceUp, isAirborne;
 } player;
 
+
+enum Block {
+  undefined = -1,
+  air = 0,
+  playerU = 1,
+  playerD = 2,
+  solid = 3,
+  spikeU = 4,
+  spikeD = 5,
+  start = 6,
+  goal = 7
+};
+
 // Levels
-char levels[2][4][20] = {
+char levels[2][lcdHeight][lcdWidth] = {
   // Level 1
- {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+ {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
+  {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+
+  {3,3,3,3,3,3,3,3,5,5,5,5,3,3,3,3,3,3,3,3},
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}},
+
+  {0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,4,4,3,3},
+  {0,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0},
+
+  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
+  {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}},
   // Level 2
  {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}},
 };
+
+void updatePlayerChar(char id1, char id2) {
+  char combinedTile[8];
+  for(i = 0; i < 8; i++) {
+    combinedTile[i] = tiles[id1][i] | tiles[id2][i];
+  }
+  Lcd_RS = 0;
+  Lcd_Cmd(64);
+  Lcd_RS = 1;
+  for(i = 0; i < 8; i++) { Lcd_Chr_Cp(combinedTile[i]); }
+  Lcd_RS = 0;
+  Lcd_Cmd(128);
+  Lcd_RS = 1;
+}
+
+char curLevel = 0;
 
 // Loop variables
 int i, j;
@@ -47,8 +92,42 @@ void main() {
   while(1) { update(); }
 }
 
-void update() {
+char getBlock(char x, char y) {
+  if(x < 0 || x > lcdWidth || y < 0 || y > lcdHeight) { return -1; }
+  return levels[curLevel][y][x];
+}
 
+void checkAirborne() {
+  char offset = player.isFaceUp ? -1 : 1;
+  char below[8] = getBlock(player.x, player.y+offset);
+  if(below == Block.air ||
+    (below == Block.spikeU && isFaceUp) ||
+    (below == Block.spikeD && !isFaceUp)) {
+    player.isAirborne = true;
+  }
+  player.isAirborne = false;
+}
+
+void update() {
+  checkAirborne();
+  if(!player.isAirborne) {
+    if(leftBtn) {
+      if(getBlock(player.x-1, player.y) == Block.air) {
+        player.x--;
+      }
+    }
+    else if(rightBtn) {
+      if(getBlock(player.x+1, player.y) == Block.air) {
+        player.x++;
+      }
+    }
+    else if(gravityBtn) {
+      isFaceUp = ~isFaceUp;
+    }
+  }
+  if(isAirborne) { player.y--; }
+  //checkCurTile(); // Check for goal, spikes etc.
+  delay_ms(100);
 }
 
 void initialize() {
@@ -58,11 +137,16 @@ void initialize() {
 }
 
 void loadLevel(char levelIndex) {
-  for(i = 1; i <= 4; i++) {
-    for(j = 1; j <= 20; j++) {
+  for(i = 1; i <= lcdHeight; i++) {
+    for(j = 1; j <= lcdWidth; j++) {
       Lcd_Chr(i, j, levels[levelIndex][i][j]);
     }
   }
+}
+
+void initGame() {
+  player.x = player.y = player.isAirborne = 0;
+  player.isFaceUp = 1;
 }
 
 void initPIC() {
@@ -86,6 +170,10 @@ void initLCD() {
   Lcd_RS = 0;
   Lcd_Cmd(64);
   Lcd_RS = 1;
+
+  for(i = 0; i < tilesCount; i++) {
+    for(j = 0; j < 8; j++) { Lcd_Chr_Cp(tiles[i][j]); }
+  }
 
   // Player, face-up_upper
   Lcd_Chr_Cp(0b00001010);
@@ -128,36 +216,36 @@ void initLCD() {
   Lcd_Chr_Cp(0b00000000);
 
   // Block
+  /*Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);*/
+
+  // Half block, upper
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00011111);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+
+  // Half block, lower
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
+  Lcd_Chr_Cp(0b00000000);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00011111);
 
-  // Half block, face-up
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-
-  // Half block, face-down
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-
-  // Spike upper
+  // Spike, upper
   Lcd_Chr_Cp(0b00011111);
   Lcd_Chr_Cp(0b00001110);
   Lcd_Chr_Cp(0b00000100);
@@ -167,7 +255,7 @@ void initLCD() {
   Lcd_Chr_Cp(0b00000000);
   Lcd_Chr_Cp(0b00000000);
 
-  // Spike lower
+  // Spike, lower
   Lcd_Chr_Cp(0b00000000);
   Lcd_Chr_Cp(0b00000000);
   Lcd_Chr_Cp(0b00000000);
