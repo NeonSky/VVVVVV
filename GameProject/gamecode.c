@@ -41,7 +41,6 @@ enum Block {
   goal = 7
 };
 
-// Levels
 static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
   // Level 1
  {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
@@ -54,13 +53,13 @@ static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
   {0,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0},
 
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
-  {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}}
-  // Level 2
+  {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}},
 };
 
-static const char numberTiles = 2;
 static const char lcdCharLength = 8;
-static const char tiles[numberTiles][lcdCharLength] = {
+static const char tiles[][lcdCharLength] = {
+
+  // Player, face-up_upper
   {0b00001010,
    0b00000000,
    0b00010001,
@@ -70,6 +69,47 @@ static const char tiles[numberTiles][lcdCharLength] = {
    0b00000000,
    0b00000000},
 
+  // Player, face-up_lower
+  {0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00001010,
+   0b00000000,
+   0b00010001,
+   0b00001110},
+
+  // Player, face-down_upper
+  {0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00001110,
+   0b00010001,
+   0b00000000,
+   0b00001010},
+
+  // Player, face-down_lower
+  {0b00001110,
+   0b00010001,
+   0b00000000,
+   0b00001010,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000},
+
+  // Half block, upper
+  {0b00011111,
+   0b00011111,
+   0b00011111,
+   0b00011111,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000},
+
+  // Half block, lower
   {0b00000000,
    0b00000000,
    0b00000000,
@@ -77,9 +117,30 @@ static const char tiles[numberTiles][lcdCharLength] = {
    0b00011111,
    0b00011111,
    0b00011111,
-   0b00011111}
-};
+   0b00011111},
 
+  // Spike, upper
+  {0b00011111,
+   0b00001110,
+   0b00000100,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000},
+
+  // Spike, lower
+  {0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000100,
+   0b00001110,
+   0b00011111}
+
+};
+static const char numberTiles = sizeof(tiles)/sizeof(tiles[0]);
 
 char curLevel = 0;
 
@@ -116,10 +177,10 @@ void main() {
   while(1) { update(); }
 }
 
-/*char getBlockId(char x, char y) {
+char getBlockId(char x, char y) {
   if(x < 0 || x > lcdWidth || y < 0 || y > lcdHeight) { return -1; }
   return levels[curLevel][y][x];
-}*/
+}
 
 void checkAirborne() {
   short offset;
@@ -135,6 +196,7 @@ void checkAirborne() {
 }
 
 void update() {
+levels[0][0][0];
   /*checkAirborne();
   if(!player.isAirborne) {
     if(leftBtn) {
@@ -152,13 +214,14 @@ void update() {
     }
   }
   if(isAirborne) { player.y--; }
-  //checkCurTile(); // Check for goal, spikes etc.*/
+  //checkCurTile(); // Check for goal, spikes etc.    */
 
   Lcd_Cmd(_LCD_CLEAR);
-  updatePlayerChar(0, 1);
-  Lcd_Chr(1, 1, 0);
 
-  delay_ms(100);
+  updatePlayerChar(0, 1);
+  Lcd_Chr(player.x+1, player.y+1, 0);
+
+  delay_ms(50);
 }
 
 void initialize() {
@@ -207,96 +270,6 @@ void initLCD() {
   for(i = 0; i < numberTiles; i++) {
     for(j = 0; j < lcdCharLength; j++) { Lcd_Chr_Cp(tiles[i][j]); }
   }
-
-  // Player, face-up_upper
-  Lcd_Chr_Cp(0b00001010);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00010001);
-  Lcd_Chr_Cp(0b00001110);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-
-  // Player, face-up_lower
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00001010);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00010001);
-  Lcd_Chr_Cp(0b00001110);
-
-  // Player, face-down_upper
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00001110);
-  Lcd_Chr_Cp(0b00010001);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00001010);
-
-  // Player, face-down_lower
-  Lcd_Chr_Cp(0b00001110);
-  Lcd_Chr_Cp(0b00010001);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00001010);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-
-  // Block
-  /*Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);*/
-
-  // Half block, upper
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-
-  // Half block, lower
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00011111);
-
-  // Spike, upper
-  Lcd_Chr_Cp(0b00011111);
-  Lcd_Chr_Cp(0b00001110);
-  Lcd_Chr_Cp(0b00000100);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-
-  // Spike, lower
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000000);
-  Lcd_Chr_Cp(0b00000100);
-  Lcd_Chr_Cp(0b00001110);
-  Lcd_Chr_Cp(0b00011111);
 
   Lcd_RS = 0;
   Lcd_Cmd(128);
