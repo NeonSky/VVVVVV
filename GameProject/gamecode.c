@@ -17,10 +17,9 @@ sbit gravityBtn at PORTC.B5;
 sbit leftBtn at PORTC.B6;
 sbit rightBtn at PORTC.B7;
 
-#define levelCount 2
-#define lcdWidth 20
-#define lcdHeight 4
-
+static const char levelCount = 2;
+static const char lcdWidth = 20;
+static const char lcdHeight = 4;
 
 struct Player {
   char x, y, isAirborne;
@@ -54,6 +53,19 @@ static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
 
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
   {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}},
+
+  // Level 2
+ {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
+  {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+
+  {3,3,3,3,3,3,3,3,5,5,5,5,3,3,3,3,3,3,3,3},
+  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+
+  {0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,4,4,3,3},
+  {0,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0},
+
+  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
+  {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}}
 };
 
 static const char lcdCharLength = 8;
@@ -140,7 +152,7 @@ static const char tiles[][lcdCharLength] = {
    0b00011111}
 
 };
-static const char numberTiles = sizeof(tiles)/sizeof(tiles[0]);
+static const char tileCount = sizeof(tiles)/sizeof(tiles[0]);
 
 char curLevel = 0;
 
@@ -157,6 +169,67 @@ void combineTile();
 char getBlockId(char, char);
 void checkAirborne();
 
+
+void main() {
+  initialize();
+  loadLevel(0);
+  while(1) { update(); }
+}
+
+void initialize() {
+  initPIC();
+  initLCD();
+  initGame();
+}
+
+void initGame() {
+  player.isAirborne = 0;
+  player.isFaceUp = 1;
+}
+
+void initPIC() {
+  OSCCON = 0b01110111; // 8 MHz
+  ANSEL = 0b00000000;
+  ANSELH = 0b00000000;
+
+  TRISA = 0b00000000;
+  TRISB = 0b00000000;
+  TRISC = 0b00000000;
+  PORTA = 0b00000000;
+  PORTB = 0b00000000;
+  PORTC = 0b00000000;
+}
+
+void initLCD() {
+  Lcd_Init();
+  Lcd_Cmd(_LCD_CLEAR);
+  Lcd_Cmd(_LCD_CURSOR_OFF);
+
+  // Load custom characters to memory
+  Lcd_RS = 0;
+  Lcd_Cmd(64+lcdCharLength);
+  Lcd_RS = 1;
+
+  for(i = 0; i < tileCount; i++) {
+    for(j = 0; j < lcdCharLength; j++) {
+      Lcd_Chr_Cp(tiles[i][j]);
+    }
+  }
+
+  Lcd_RS = 0;
+  Lcd_Cmd(128);
+  Lcd_RS = 1;
+}
+
+void loadLevel(char levelIndex) {
+  for(i = 0; i < lcdHeight; i++) {
+    for(j = 0; j < lcdWidth; j++) {
+      comineTiles(levels[levelIndex][2*i][j], levels[levelIndex][2*i+1][j]);
+      Lcd_Chr(i+1, j+1, 0);
+    }
+  }
+}
+
 void combineTile(char id1, char id2) {
   char combinedTile[lcdCharLength];
   for(i = 0; i < lcdCharLength; i++) {
@@ -169,12 +242,6 @@ void combineTile(char id1, char id2) {
   Lcd_RS = 0;
   Lcd_Cmd(128);
   Lcd_RS = 1;
-}
-
-void main() {
-  initialize();
-  loadLevel(0);
-  while(1) { update(); }
 }
 
 char getBlockId(char x, char y) {
@@ -190,13 +257,13 @@ void checkAirborne() {
   if(below == air ||
     (below == spikeU && player.isFaceUp == 1) ||
     (below == spikeD && player.isFaceUp == 0)) {
-    //player.isAirborne = 1;
+    player.isAirborne = 1;
   }
   player.isAirborne = 0;
 }
 
 void update() {
-levels[0][0][0];
+  //levels[0][0][0];
   /*checkAirborne();
   if(!player.isAirborne) {
     if(leftBtn) {
@@ -222,56 +289,4 @@ levels[0][0][0];
   Lcd_Chr(player.x+1, player.y+1, 0);
 
   delay_ms(50);
-}
-
-void initialize() {
-  initPIC();
-  initLCD();
-  //initGame();
-}
-
-void loadLevel(char levelIndex) {
-  for(i = 1; i <= lcdHeight; i++) {
-    for(j = 1; j <= lcdWidth; j++) {
-      comineTiles(levels[levelIndex][2*i][j], levels[levelIndex][2*i+1][j]);
-      Lcd_Chr(i, j, 0);
-    }
-  }
-}
-
-/*
-void initGame() {
-  player.isAirborne = 0;
-  player.isFaceUp = 1;
-}
-  */
-void initPIC() {
-  OSCCON = 0b01110111; // 8 MHz
-  ANSEL = 0b00000000;
-  ANSELH = 0b00000000;
-
-  TRISA = 0b00000000;
-  TRISB = 0b00000000;
-  TRISC = 0b00000000;
-  PORTA = 0b00000000;
-  PORTB = 0b00000000;
-  PORTC = 0b00000000;
-}
-
-void initLCD() {
-  Lcd_Init();
-  Lcd_Cmd(_LCD_CLEAR);
-  Lcd_Cmd(_LCD_CURSOR_OFF);
-
-  Lcd_RS = 0;
-  Lcd_Cmd(64);
-  Lcd_RS = 1;
-
-  for(i = 0; i < numberTiles; i++) {
-    for(j = 0; j < lcdCharLength; j++) { Lcd_Chr_Cp(tiles[i][j]); }
-  }
-
-  Lcd_RS = 0;
-  Lcd_Cmd(128);
-  Lcd_RS = 1;
 }
