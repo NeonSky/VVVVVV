@@ -43,17 +43,17 @@ enum Block {
 
 static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
   // Level 1
- {{5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5},
-  {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-
-  {5,5,5,5,5,5,5,5,7,7,7,7,5,5,5,5,5,5,5,0},
+ {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 
-  {0,0,0,0,0,0,0,5,5,5,5,5,5,5,5,5,7,7,5,5},
-  {0,6,6,6,6,6,6,0,0,0,0,0,0,0,0,0,0,0,0,0},
+  {1,1,1,1,1,1,1,1,3,3,3,3,1,1,1,1,1,1,1,0},
+  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+
+  {0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,3,3,1,1},
+  {0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0},
 
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {6,6,0,0,0,0,6,6,6,6,6,6,7,7,7,6,6,6,6,6}},
+  {2,2,0,0,0,0,2,2,2,2,2,2,3,3,3,2,2,2,2,2}},
 
   // Level 2
  {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
@@ -69,19 +69,8 @@ static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
   {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}}
 };
 
-static const char lcdCharLength = 8;
-static const char tiles[][lcdCharLength] = {
-  // Air
-  {0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000},
-
-  // Player, face-up_upper
+static const char playerStates[][lcdCharLength]= {
+  // Face-up, upper
   {0b00001010,
    0b00000000,
    0b00010001,
@@ -91,7 +80,7 @@ static const char tiles[][lcdCharLength] = {
    0b00000000,
    0b00000000},
 
-  // Player, face-up_lower
+   // Face-up, lower
   {0b00000000,
    0b00000000,
    0b00000000,
@@ -101,7 +90,17 @@ static const char tiles[][lcdCharLength] = {
    0b00010001,
    0b00001110},
 
-  // Player, face-down_upper
+  // Face-down, upper
+  {0b00001110,
+   0b00010001,
+   0b00000000,
+   0b00001010,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000},
+
+  // Face-down, lower
   {0b00000000,
    0b00000000,
    0b00000000,
@@ -109,13 +108,16 @@ static const char tiles[][lcdCharLength] = {
    0b00001110,
    0b00010001,
    0b00000000,
-   0b00001010},
+   0b00001010}
+};
 
-  // Player, face-down_lower
-  {0b00001110,
-   0b00010001,
+static const char lcdCharLength = 8;
+static const char tiles[][lcdCharLength] = {
+  // Air
+  {0b00000000,
    0b00000000,
-   0b00001010,
+   0b00000000,
+   0b00000000,
    0b00000000,
    0b00000000,
    0b00000000,
@@ -160,7 +162,6 @@ static const char tiles[][lcdCharLength] = {
    0b00000100,
    0b00001110,
    0b00011111}
-
 };
 static const char tileCount = sizeof(tiles)/sizeof(tiles[0]);
 
@@ -175,7 +176,7 @@ void initLCD();
 void initGame();
 void loadLevel(char);
 void update();
-void combineTiles(char, char);
+void updatePlayerChar(char, char);
 char getBlockId(char, char);
 void checkAirborne();
 
@@ -232,17 +233,19 @@ void initLCD() {
 }
 
 void loadLevel(char levelIndex) {
+  char tile;
   curLevel = levelIndex;
 
   for(i = 0; i < lcdHeight; i++) {
     for(j = 0; j < lcdWidth; j++) {
-      combineTiles(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
-      Lcd_Chr(i+1, j+1, 0);
+      //combineTiles(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
+      tile = max(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
+      Lcd_Chr(i+1, j+1, tile);
     }
   }
 }
 
-void combineTiles(char id1, char id2) {
+void updatePlayerChar(char playerState, char tileId) {
   char it;
   char combinedTile[lcdCharLength];
   for(it = 0; it < lcdCharLength; it++) {
@@ -291,10 +294,18 @@ void update() {
   if(isAirborne) { player.y--; }
   //checkCurTile(); // Check for goal, spikes etc.    */
 
-  /*if(player.y % 2 == 0) {
-    combineTiles(0, levels[curLevel][2*player.y+1][player.x]);
+  if(player.y % 2 == 0) {
+    if(player.isFaceUp) {
+      updatePlayerChar(0, levels[curLevel][2*player.y+1][player.x]);
+    } else {
+      updatePlayerChar(2, levels[curLevel][2*player.y+1][player.x]);
+    }
   } else {
-    combineTiles(1, levels[curLevel][2*player.y][player.x]);
-  */
+    if(player.isFaceUp) {
+      updatePlayerChar(1, levels[curLevel][2*player.y][player.x]);
+    } else {
+      updatePlayerChar(3, levels[curLevel][2*player.y][player.x]);
+    }
+  }
   delay_ms(50);
 }
