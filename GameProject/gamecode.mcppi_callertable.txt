@@ -1,10 +1,28 @@
 main
+	__CC2DW
+		____DoICP
 	initialize
 		initPIC
 		initLCD
 			Lcd_Init
 				Delay_5500us
 				Delay_1us
+			Lcd_Cmd
+				Delay_1us
+				Delay_5500us
+				Delay_50us
+			____DoICP
+			Lcd_Chr_CP
+				Lcd_Cmd
+					Delay_1us
+					Delay_5500us
+					Delay_50us
+		initGame
+	loadLevel
+		Mul_16X16_U
+		____DoICP
+		combineTiles
+			____DoICP
 			Lcd_Cmd
 				Delay_1us
 				Delay_5500us
@@ -20,3 +38,23 @@ main
 				Delay_5500us
 				Delay_50us
 	update
+		Lcd_Cmd
+			Delay_1us
+			Delay_5500us
+			Delay_50us
+		combineTiles
+			____DoICP
+			Lcd_Cmd
+				Delay_1us
+				Delay_5500us
+				Delay_50us
+			Lcd_Chr_CP
+				Lcd_Cmd
+					Delay_1us
+					Delay_5500us
+					Delay_50us
+		Lcd_Chr
+			Lcd_Cmd
+				Delay_1us
+				Delay_5500us
+				Delay_50us

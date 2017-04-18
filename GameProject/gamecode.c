@@ -22,11 +22,12 @@ static const char lcdWidth = 20;
 static const char lcdHeight = 4;
 
 struct Player {
-  char x, y, isAirborne;
+  char x;
+  char y;
+  char isAirborne;
   short isFaceUp;
 };
-typedef struct Player Player;
-Player player;
+struct Player player = {0, 0, 0, 1};
 
 enum Block {
   undefined = -1,

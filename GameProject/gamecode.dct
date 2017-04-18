@@ -418,6 +418,7 @@ ckp_bit
 cm1con0
 cm2con0
 cm2con1
+combinetiles
 comfrem
 compare_double
 cos
@@ -613,6 +614,7 @@ i2c1_wr
 ics_auto
 ics_off
 indf
+initgame
 initialize
 initlcd
 initpic
@@ -690,7 +692,6 @@ lcd_rs_direction
 ldexp
 ldiv
 leftbtn
-levels
 loadlevel
 log
 log10
@@ -1553,7 +1554,6 @@ ulpwuie_bit
 ulpwuif
 ulpwuif_bit
 update
-updateplayerchar
 vcfg0
 vcfg0_bit
 vcfg1
