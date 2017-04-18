@@ -165,7 +165,7 @@ void initLCD();
 void initGame();
 void loadLevel(char);
 void update();
-void combineTile();
+void combineTiles();
 char getBlockId(char, char);
 void checkAirborne();
 
@@ -222,15 +222,16 @@ void initLCD() {
 }
 
 void loadLevel(char levelIndex) {
+  curLevel = levelIndex;
   for(i = 0; i < lcdHeight; i++) {
     for(j = 0; j < lcdWidth; j++) {
-      comineTiles(levels[levelIndex][2*i][j], levels[levelIndex][2*i+1][j]);
+      combineTiles(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
       Lcd_Chr(i+1, j+1, 0);
     }
   }
 }
 
-void combineTile(char id1, char id2) {
+void combineTiles(char id1, char id2) {
   char combinedTile[lcdCharLength];
   for(i = 0; i < lcdCharLength; i++) {
     combinedTile[i] = tiles[id1][i] | tiles[id2][i];
@@ -263,7 +264,7 @@ void checkAirborne() {
 }
 
 void update() {
-  //levels[0][0][0];
+  Lcd_Cmd(_LCD_CLEAR);
   /*checkAirborne();
   if(!player.isAirborne) {
     if(leftBtn) {
@@ -283,9 +284,11 @@ void update() {
   if(isAirborne) { player.y--; }
   //checkCurTile(); // Check for goal, spikes etc.    */
 
-  Lcd_Cmd(_LCD_CLEAR);
-
-  updatePlayerChar(0, 1);
+  if(player.y % 2 == 0) {
+    combineTiles(1, levels[curLevel][2*player.y+1][player.x]);
+  } else {
+    combineTiles(levels[curLevel][2*player.y][player.x, 1);
+  }
   Lcd_Chr(player.x+1, player.y+1, 0);
 
   delay_ms(50);
