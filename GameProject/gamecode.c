@@ -43,7 +43,7 @@ enum Block {
 
 static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
   // Level 1
- {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
+ {{5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5},
   {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 
   {3,3,3,3,3,3,3,3,5,5,5,5,3,3,3,3,3,3,3,3},
@@ -71,6 +71,15 @@ static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
 
 static const char lcdCharLength = 8;
 static const char tiles[][lcdCharLength] = {
+  // Air
+  {0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000},
 
   // Player, face-up_upper
   {0b00001010,
@@ -166,7 +175,7 @@ void initLCD();
 void initGame();
 void loadLevel(char);
 void update();
-void combineTiles();
+void combineTiles(char, char);
 char getBlockId(char, char);
 void checkAirborne();
 
@@ -224,6 +233,7 @@ void initLCD() {
 
 void loadLevel(char levelIndex) {
   curLevel = levelIndex;
+
   for(i = 0; i < lcdHeight; i++) {
     for(j = 0; j < lcdWidth; j++) {
       combineTiles(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
@@ -233,17 +243,14 @@ void loadLevel(char levelIndex) {
 }
 
 void combineTiles(char id1, char id2) {
+  char it;
   char combinedTile[lcdCharLength];
-  for(i = 0; i < lcdCharLength; i++) {
-    combinedTile[i] = tiles[id1][i] | tiles[id2][i];
+  for(it = 0; it < lcdCharLength; it++) {
+    combinedTile[it] = tiles[id1][it] | tiles[id2][it];
   }
-  Lcd_RS = 0;
   Lcd_Cmd(64);
-  Lcd_RS = 1;
-  for(i = 0; i < lcdCharLength; i++) { Lcd_Chr_Cp(combinedTile[i]); }
-  Lcd_RS = 0;
-  Lcd_Cmd(128);
-  Lcd_RS = 1;
+  for(it = 0; it < lcdCharLength; it++) { Lcd_Chr_Cp(combinedTile[it]); }
+  Lcd_Cmd(_LCD_RETURN_HOME);
 }
 
 char getBlockId(char x, char y) {
@@ -265,7 +272,6 @@ void checkAirborne() {
 }
 
 void update() {
-  Lcd_Cmd(_LCD_CLEAR);
   /*checkAirborne();
   if(!player.isAirborne) {
     if(leftBtn) {
@@ -285,12 +291,10 @@ void update() {
   if(isAirborne) { player.y--; }
   //checkCurTile(); // Check for goal, spikes etc.    */
 
-  if(player.y % 2 == 0) {
-    combineTiles(1, levels[curLevel][2*player.y+1][player.x]);
+  /*if(player.y % 2 == 0) {
+    combineTiles(0, levels[curLevel][2*player.y+1][player.x]);
   } else {
-    combineTiles(levels[curLevel][2*player.y][player.x, 1);
-  }
-  Lcd_Chr(player.x+1, player.y+1, 0);
-
+    combineTiles(1, levels[curLevel][2*player.y][player.x]);
+  */
   delay_ms(50);
 }
