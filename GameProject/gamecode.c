@@ -69,7 +69,7 @@ static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
   {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}}
 };
 
-static const char playerStates[][lcdCharLength]= {
+static const char playerStates[4][lcdCharLength]= {
   // Face-up, upper
   {0b00001010,
    0b00000000,
@@ -240,7 +240,7 @@ void loadLevel(char levelIndex) {
     for(j = 0; j < lcdWidth; j++) {
       //combineTiles(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
       tile = max(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
-      Lcd_Chr(i+1, j+1, tile);
+      Lcd_Chr(i+1, j+1, tile+1);
     }
   }
 }
