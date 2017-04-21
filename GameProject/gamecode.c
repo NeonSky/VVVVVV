@@ -27,7 +27,7 @@ struct Player {
   char isAirborne;
   short isFaceUp;
 };
-struct Player player = {0, 0, 0, 1};
+struct Player player = {0, 1, 0, 1};
 
 enum Block {
   undefined = -1,
@@ -53,7 +53,7 @@ static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
   {0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0},
 
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {2,2,0,0,0,0,2,2,2,2,2,2,3,3,3,2,2,2,2,2}},
+  {2,2,0,0,0,0,2,2,2,2,2,2,4,4,4,2,2,2,2,2}},
 
   // Level 2
  {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
@@ -69,7 +69,12 @@ static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
   {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}}
 };
 
+<<<<<<< HEAD
 static const char playerStates[4][lcdCharLength]= {
+=======
+static const char lcdCharLength = 8;
+static const char playerStates[][lcdCharLength] = {
+>>>>>>> 733654819aab34835bf62150bdc53f08c679ed4f
   // Face-up, upper
   {0b00001010,
    0b00000000,
@@ -110,8 +115,6 @@ static const char playerStates[4][lcdCharLength]= {
    0b00000000,
    0b00001010}
 };
-
-static const char lcdCharLength = 8;
 static const char tiles[][lcdCharLength] = {
   // Air
   {0b00000000,
@@ -249,8 +252,9 @@ void updatePlayerChar(char playerState, char tileId) {
   char it;
   char combinedTile[lcdCharLength];
   for(it = 0; it < lcdCharLength; it++) {
-    combinedTile[it] = tiles[id1][it] | tiles[id2][it];
+    combinedTile[it] = playerStates[playerState][it] | tiles[tileId][it];
   }
+
   Lcd_Cmd(64);
   for(it = 0; it < lcdCharLength; it++) { Lcd_Chr_Cp(combinedTile[it]); }
   Lcd_Cmd(_LCD_RETURN_HOME);
@@ -294,9 +298,9 @@ void update() {
   if(isAirborne) { player.y--; }
   //checkCurTile(); // Check for goal, spikes etc.    */
 
-  if(player.y % 2 == 0) {
+  /*if(player.y % 2 == 0) {
     if(player.isFaceUp) {
-      updatePlayerChar(0, levels[curLevel][2*player.y+1][player.x]);
+      updatePlayerChar(0, levels[curLevel][player.y+1][player.x]);
     } else {
       updatePlayerChar(2, levels[curLevel][2*player.y+1][player.x]);
     }
@@ -306,6 +310,12 @@ void update() {
     } else {
       updatePlayerChar(3, levels[curLevel][2*player.y][player.x]);
     }
-  }
+  }*/
+
+  signed char player_dir = player.isFaceUp == 1 ? -1 : 1;
+  char player_state = player.y % 2 + 2*(1-player.isFaceUp);
+  updatePlayerChar(player_state, levels[curLevel][player.y-player_dir][player.x]);
+  Lcd_Chr(player.y/2 + 1, player.x + 1, 0);
+
   delay_ms(50);
 }
