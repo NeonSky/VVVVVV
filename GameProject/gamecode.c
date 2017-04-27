@@ -1,4 +1,5 @@
 #include "lcd.h"
+#include "menu.h"
 #include "levels.h"
 #include "player.h"
 
@@ -14,6 +15,7 @@ GameState gameState = ST_MENU;
 // Function declarations
 void initialize();
 void initPIC();
+void changeGameState(GameState newState);
 void update();
 void goalReached();
 
@@ -24,7 +26,7 @@ static const char updateInterval = 50; // delay between each update();
 // Driver program
 void main() {
   initialize();
-  loadLevel(0);
+  changeGameState(ST_MENU);
   while(1) { update(); }
 }
 
@@ -48,8 +50,11 @@ void initPIC() {
 }
 
 void changeGameState(GameState newState) {
-  if(gameState == ST_MENU && newState == ST_INGAME) {
-    // loadLevel();
+  if(newState == ST_MENU) {
+    loadMenu();
+  }
+  else if(gameState == ST_MENU && newState == ST_INGAME) {
+    initPlayer();
   }
   gameState = newState;
 }
@@ -61,6 +66,7 @@ void update() {
       break;
     case ST_INGAME:
       movePlayer();
+      if(getTileId(player.y+1, player.x+1) == goal) { goalReached(); }
       break;
     case ST_PAUSE:
       break;

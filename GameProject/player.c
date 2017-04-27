@@ -26,7 +26,7 @@ void movePlayer() {
     if(getTileId(player.x+1, player.y) == air) { player.x++; }
   }
   else if(gravityBtn) {
-    isFaceUp = ~isFaceUp;
+    player.isFaceUp = ~player.isFaceUp;
   }
   clampPlayerPos();
   updatePlayerSprite();
@@ -43,6 +43,7 @@ void clampPlayerPos() {
 
 void updatePlayerSprite() {
   char i;
+
   signed char gravityDir = (player.isFaceUp == 1) ? -1 : 1;
   short tileId = getTileId(player.x, player.y - gravityDir);
   char playerSprite = player.y % 2 + 2*(1-player.isFaceUp);

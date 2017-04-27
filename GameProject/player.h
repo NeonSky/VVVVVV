@@ -25,7 +25,7 @@ extern struct Player player;
 void initPlayer();
 void movePlayer();
 void updatePlayerSprite();
-void checkAirborne();
+void checkAirborne(signed char gravityDir);
 void clampPlayerPos();
 void playerDied();
 
