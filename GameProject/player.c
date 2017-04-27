@@ -7,19 +7,20 @@ void initPlayer() {
   player.isFaceUp = 1;
 }
 
-void updatePlayerChar(char playerState, char tileId) {
-  char it;
+void updatePlayerSprite() {
+  char i;
+  char tileId = getTileId(player.x, player.y-playerDir);
+  signed char playerDir = (player.isFaceUp == 1) ? -1 : 1;
+  char playerState = player.y % 2 + 2*(1-player.isFaceUp);
   char combinedTile[lcdCharLength];
-  for(it = 0; it < lcdCharLength; it++) {
-    combinedTile[it] = playerStates[playerState][it] | tiles[tileId][it];
+
+  for(i = 0; i < lcdCharLength; i++) {
+    combinedTile[i] = playerSprites[playerState][i] | tileSprites[tileId][i];
   }
 
-  Lcd_Cmd(64);
-  for(it = 0; it < lcdCharLength; it++) { Lcd_Chr_Cp(combinedTile[it]); }
+  Lcd_Cmd(charEntryMemory);
+  for(i = 0; i < lcdCharLength; i++) { Lcd_Chr_Cp(combinedTile[i]); }
   Lcd_Cmd(_LCD_RETURN_HOME);
-}
-
-void drawPlayer() {
   Lcd_Chr(player.y/2 + 1, player.x + 1, 0);
 }
 

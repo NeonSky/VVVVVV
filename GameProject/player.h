@@ -7,13 +7,13 @@
 /*
     Declarations
 */
+// User inputs
 sbit gravityBtn at PORTC.B5;
 sbit leftBtn at PORTC.B6;
 sbit rightBtn at PORTC.B7;
 
 struct Player {
-  char x;
-  char y;
+  char x, y;
   char isAirborne;
   short isFaceUp;
 };
@@ -24,7 +24,7 @@ extern struct Player player;
     Functions
 */
 void initPlayer();
-void updatePlayerChar(char playerState, char tileId);
+void updatePlayerSprite();
 void drawPlayer();
 void checkAirborne();
 
@@ -32,7 +32,8 @@ void checkAirborne();
 /*
     Constants
 */
-static const char playerStates[][lcdCharLength] = {
+// Player sprites, used to represent different states of the player on the LCD
+static const char playerSprites[][lcdCharLength] = {
   // Face-up, upper
   {0b00001010,
    0b00000000,
