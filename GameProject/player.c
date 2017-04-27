@@ -1,10 +1,12 @@
 #include "player.h"
 
-struct Player player = {1, 1, 0, 1};
+struct Player player;
 
-void initPlayer() {
-  player.isAirborne = 0;
-  player.isFaceUp = 1;
+void initPlayer(char x, char y, airborne, faceUp) {
+  player.x = x
+  player.y = y;
+  player.isAirborne = airborne;
+  player.isFaceUp = faceUp;
 }
 
 void movePlayer() {
@@ -28,6 +30,7 @@ void movePlayer() {
   else if(gravityBtn) {
     player.isFaceUp = ~player.isFaceUp;
   }
+
   clampPlayerPos();
   updatePlayerSprite();
   checkCurTile();

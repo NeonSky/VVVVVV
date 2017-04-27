@@ -19,7 +19,7 @@ static char curLevel = 0;
 static const char levels[][lcdHeight*2][lcdWidth] = {
   // Level 1
  {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},  // Row 1 (upper)
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // Row 1 (lower)
+  {8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // Row 1 (lower)
 
   {1,1,1,1,1,1,1,1,3,3,3,3,1,1,1,1,1,1,1,0},  // Row 2 (upper)
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // Row 2 (lower)
@@ -49,13 +49,12 @@ static const char levelCount = sizeof(levels) / sizeof(levels[0]);
 enum Tile {
   undefined = -1,
   air = 0,
-  playerU = 1,
-  playerD = 2,
-  solid = 3,
-  spikeU = 4,
-  spikeD = 5,
-  start = 6,
-  goal = 7
+  halfBlockU = 1,
+  halfBlockL = 2,
+  spikeU = 3,
+  spikeD = 4,
+  start = 8,
+  goal = 9
 };
 
 // Tile sprites, used to represent the various of tiles on the LCD

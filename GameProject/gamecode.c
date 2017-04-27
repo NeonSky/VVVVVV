@@ -66,7 +66,6 @@ void update() {
       break;
     case ST_INGAME:
       movePlayer();
-      if(getTileId(player.y+1, player.x+1) == goal) { goalReached(); }
       break;
     case ST_PAUSE:
       break;
