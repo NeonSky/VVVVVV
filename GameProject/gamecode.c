@@ -1,4 +1,5 @@
 #include "lcd.h"
+#include "menu.h"
 #include "levels.h"
 #include "player.h"
 
@@ -11,7 +12,7 @@ GameState gameState = ST_MENU;
 
 void initialize();
 void initPIC();
-void initGame();
+void changeGameState(GameState newState);
 void update();
 
 // Micro controller
@@ -19,14 +20,14 @@ static const char updateInterval = 50; // delay between each update();
 
 void main() {
   initialize();
-  loadLevel(0);
+
+  changeGameState(ST_MENU);
   while(1) { update(); }
 }
 
 void initialize() {
   initPIC();
   initLCD();
-  initGame();
 }
 
 void initPIC() {
@@ -42,14 +43,13 @@ void initPIC() {
   PORTC = 0b00000000;  // Reset PORTC
 }
 
-void initGame() {
-  initPlayer();
-}
-
-
 void changeGameState(GameState newState) {
+  if (newState == ST_MENU) {
+    loadMenu();
+  }
   if (gameState == ST_MENU && newState == ST_INGAME) {
     // loadLevel();
+    initPlayer();
   }
   gameState = newState;
 }
