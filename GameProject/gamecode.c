@@ -2,6 +2,13 @@
 #include "levels.h"
 #include "player.h"
 
+typedef enum GameState{
+  ST_MENU,
+	ST_PAUSE,
+	ST_INGAME
+} GameState;
+GameState gameState = ST_MENU;
+
 void initialize();
 void initPIC();
 void initGame();
@@ -34,6 +41,14 @@ void initPIC() {
   PORTA = 0b00000000;
   PORTB = 0b00000000;
   PORTC = 0b00000000;
+}
+
+
+void changeGameState(GameState newState) {
+  if (gameState == ST_MENU && newState == ST_INGAME) {
+    // loadLevel();
+  }
+  gameState = newState;
 }
 
 void update() {
@@ -70,10 +85,22 @@ void update() {
     }
   }*/
 
-  signed char player_dir = player.isFaceUp == 1 ? -1 : 1;
+  /* signed char player_dir = player.isFaceUp == 1 ? -1 : 1;
   char player_state = player.y % 2 + 2*(1-player.isFaceUp);
   updatePlayerChar(player_state, levels[curLevel][player.y-player_dir][player.x]);
-  drawPlayer();
+  drawPlayer(); */
+
+  switch (gameState) {
+    case ST_MENU:
+
+      break;
+    case ST_INGAME:
+
+      break;
+    case ST_PAUSE:
+
+      break;
+  }
 
   delay_ms(50);
 }
