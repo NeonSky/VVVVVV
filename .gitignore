@@ -31,3 +31,12 @@
 # Debug files
 *.dSYM/
 *.su
+
+# Generated Project files
+*.lst
+*.mcl
+*.txt
+*.dic
+*.asm
+*.hex
+*.ini
