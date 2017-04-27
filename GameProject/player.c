@@ -9,8 +9,8 @@ void initPlayer() {
 
 void updatePlayerSprite() {
   char i;
-  char tileId = getTileId(player.x, player.y-playerDir);
   signed char playerDir = (player.isFaceUp == 1) ? -1 : 1;
+  char tileId = getTileId(player.x, player.y-playerDir);
   char playerState = player.y % 2 + 2*(1-player.isFaceUp);
   char combinedTile[lcdCharLength];
 
@@ -28,7 +28,7 @@ void checkAirborne() {
   short offset;
   char below;
   offset = player.isFaceUp == 1 ? -1 : 1;
-  below = getBlockId(player.x, player.y+offset);
+  below = getTileId(player.x, player.y+offset);
   if(below == air ||
     (below == spikeU && player.isFaceUp == 1) ||
     (below == spikeD && player.isFaceUp == 0)) {
