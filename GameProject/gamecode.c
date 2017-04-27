@@ -6,6 +6,7 @@ void initialize();
 void initPIC();
 void initGame();
 void update();
+void goalReached();
 
 // Micro controller
 static const char updateInterval = 50; // delay between each update();
@@ -40,39 +41,11 @@ void initGame() {
 }
 
 void update() {
-  /*checkAirborne();
-  if(!player.isAirborne) {
-    if(leftBtn) {
-      if(getBlock(player.x-1, player.y) == air) {
-        player.x--;
-      }
-    }
-    else if(rightBtn) {
-      if(getBlock(player.x+1, player.y) == air) {
-        player.x++;
-      }
-    }
-    else if(gravityBtn) {
-      isFaceUp = ~isFaceUp;
-    }
-  }
-  if(isAirborne) { player.y--; }
-  //checkCurTile(); // Check for goal, spikes etc.    */
-
-  /*if(player.y % 2 == 0) {
-    if(player.isFaceUp) {
-      updatePlayerChar(0, levels[curLevel][player.y+1][player.x]);
-    } else {
-      updatePlayerChar(2, levels[curLevel][2*player.y+1][player.x]);
-    }
-  } else {
-    if(player.isFaceUp) {
-      updatePlayerChar(1, levels[curLevel][2*player.y][player.x]);
-    } else {
-      updatePlayerChar(3, levels[curLevel][2*player.y][player.x]);
-    }
-  }*/
-
-  updatePlayerSprite();
+  movePlayer();
+  if(getBlockId(player.y+1, player.x+1) == goal) { goalReached(); }
   delay_ms(updateInterval);
+}
+
+void goalReached() {
+  // Woo!
 }

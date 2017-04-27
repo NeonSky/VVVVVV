@@ -14,5 +14,5 @@ void loadLevel(char levelIndex) {
 
 char getTileId(char x, char y) {
   if(x < 0 || x > lcdWidth || y < 0 || y > lcdHeight) { return -1; }
-  return levels[curLevel][y][x];
+  return levels[curLevel][y-1][x-1];
 }
