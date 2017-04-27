@@ -1,188 +1,11 @@
-// LCD display configuration
-sbit LCD_RS at RB4_bit;
-sbit LCD_EN at RB5_bit;
-sbit LCD_D4 at RB0_bit;
-sbit LCD_D5 at RB1_bit;
-sbit LCD_D6 at RB2_bit;
-sbit LCD_D7 at RB3_bit;
-sbit LCD_RS_Direction at TRISB4_bit;
-sbit LCD_EN_Direction at TRISB5_bit;
-sbit LCD_D4_Direction at TRISB0_bit;
-sbit LCD_D5_Direction at TRISB1_bit;
-sbit LCD_D6_Direction at TRISB2_bit;
-sbit LCD_D7_Direction at TRISB3_bit;
-
-// Player Inputs
-sbit gravityBtn at PORTC.B5;
-sbit leftBtn at PORTC.B6;
-sbit rightBtn at PORTC.B7;
-
-static const char levelCount = 2;
-static const char lcdWidth = 20;
-static const char lcdHeight = 4;
-
-struct Player {
-  char x;
-  char y;
-  char isAirborne;
-  short isFaceUp;
-};
-struct Player player = {0, 1, 0, 1};
-
-enum Block {
-  undefined = -1,
-  air = 0,
-  playerU = 1,
-  playerD = 2,
-  solid = 3,
-  spikeU = 4,
-  spikeD = 5,
-  start = 6,
-  goal = 7
-};
-
-static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
-  // Level 1
- {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-
-  {1,1,1,1,1,1,1,1,3,3,3,3,1,1,1,1,1,1,1,0},
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-
-  {0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,3,3,1,1},
-  {0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0},
-
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {2,2,0,0,0,0,2,2,2,2,2,2,4,4,4,2,2,2,2,2}},
-
-  // Level 2
- {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
-  {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-
-  {3,3,3,3,3,3,3,3,5,5,5,5,3,3,3,3,3,3,3,3},
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-
-  {0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,4,4,3,3},
-  {0,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0},
-
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
-  {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}}
-};
-
-<<<<<<< HEAD
-static const char playerStates[4][lcdCharLength]= {
-=======
-static const char lcdCharLength = 8;
-static const char playerStates[][lcdCharLength] = {
->>>>>>> 733654819aab34835bf62150bdc53f08c679ed4f
-  // Face-up, upper
-  {0b00001010,
-   0b00000000,
-   0b00010001,
-   0b00001110,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000},
-
-   // Face-up, lower
-  {0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00001010,
-   0b00000000,
-   0b00010001,
-   0b00001110},
-
-  // Face-down, upper
-  {0b00001110,
-   0b00010001,
-   0b00000000,
-   0b00001010,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000},
-
-  // Face-down, lower
-  {0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00001110,
-   0b00010001,
-   0b00000000,
-   0b00001010}
-};
-static const char tiles[][lcdCharLength] = {
-  // Air
-  {0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000},
-
-  // Half block, upper
-  {0b00011111,
-   0b00011111,
-   0b00011111,
-   0b00011111,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000},
-
-  // Half block, lower
-  {0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00011111,
-   0b00011111,
-   0b00011111,
-   0b00011111},
-
-  // Spike, upper
-  {0b00011111,
-   0b00001110,
-   0b00000100,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000},
-
-  // Spike, lower
-  {0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000100,
-   0b00001110,
-   0b00011111}
-};
-static const char tileCount = sizeof(tiles)/sizeof(tiles[0]);
-
-char curLevel = 0;
-
-// Loop variables
-int i, j;
+#include "lcd.h"
+#include "levels.h"
+#include "player.h"
 
 void initialize();
 void initPIC();
-void initLCD();
 void initGame();
-void loadLevel(char);
 void update();
-void updatePlayerChar(char, char);
-char getBlockId(char, char);
-void checkAirborne();
-
 
 void main() {
   initialize();
@@ -197,8 +20,7 @@ void initialize() {
 }
 
 void initGame() {
-  player.isAirborne = 0;
-  player.isFaceUp = 1;
+  initPlayer();
 }
 
 void initPIC() {
@@ -212,70 +34,6 @@ void initPIC() {
   PORTA = 0b00000000;
   PORTB = 0b00000000;
   PORTC = 0b00000000;
-}
-
-void initLCD() {
-  Lcd_Init();
-  Lcd_Cmd(_LCD_CLEAR);
-  Lcd_Cmd(_LCD_CURSOR_OFF);
-
-  // Load custom characters to memory
-  Lcd_RS = 0;
-  Lcd_Cmd(64+lcdCharLength);
-  Lcd_RS = 1;
-
-  for(i = 0; i < tileCount; i++) {
-    for(j = 0; j < lcdCharLength; j++) {
-      Lcd_Chr_Cp(tiles[i][j]);
-    }
-  }
-
-  Lcd_RS = 0;
-  Lcd_Cmd(128);
-  Lcd_RS = 1;
-}
-
-void loadLevel(char levelIndex) {
-  char tile;
-  curLevel = levelIndex;
-
-  for(i = 0; i < lcdHeight; i++) {
-    for(j = 0; j < lcdWidth; j++) {
-      //combineTiles(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
-      tile = max(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
-      Lcd_Chr(i+1, j+1, tile+1);
-    }
-  }
-}
-
-void updatePlayerChar(char playerState, char tileId) {
-  char it;
-  char combinedTile[lcdCharLength];
-  for(it = 0; it < lcdCharLength; it++) {
-    combinedTile[it] = playerStates[playerState][it] | tiles[tileId][it];
-  }
-
-  Lcd_Cmd(64);
-  for(it = 0; it < lcdCharLength; it++) { Lcd_Chr_Cp(combinedTile[it]); }
-  Lcd_Cmd(_LCD_RETURN_HOME);
-}
-
-char getBlockId(char x, char y) {
-  if(x < 0 || x > lcdWidth || y < 0 || y > lcdHeight) { return -1; }
-  return levels[curLevel][y][x];
-}
-
-void checkAirborne() {
-  short offset;
-  char below;
-  offset = player.isFaceUp == 1 ? -1 : 1;
-  below = getBlockId(player.x, player.y+offset);
-  if(below == air ||
-    (below == spikeU && player.isFaceUp == 1) ||
-    (below == spikeD && player.isFaceUp == 0)) {
-    player.isAirborne = 1;
-  }
-  player.isAirborne = 0;
 }
 
 void update() {
@@ -315,7 +73,7 @@ void update() {
   signed char player_dir = player.isFaceUp == 1 ? -1 : 1;
   char player_state = player.y % 2 + 2*(1-player.isFaceUp);
   updatePlayerChar(player_state, levels[curLevel][player.y-player_dir][player.x]);
-  Lcd_Chr(player.y/2 + 1, player.x + 1, 0);
+  drawPlayer();
 
   delay_ms(50);
 }
