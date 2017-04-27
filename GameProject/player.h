@@ -14,8 +14,7 @@ sbit rightBtn at PORTC.B7;
 
 struct Player {
   char x, y;
-  char isAirborne;
-  short isFaceUp;
+  char isAirborne, isFaceUp;
 };
 extern struct Player player;
 
@@ -24,9 +23,10 @@ extern struct Player player;
     Functions
 */
 void initPlayer();
+void movePlayer();
 void updatePlayerSprite();
-void drawPlayer();
-void checkAirborne();
+void checkAirborne(signed char gravityDir);
+void clampPlayerPos();
 
 
 /*

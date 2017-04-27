@@ -1,5 +1,6 @@
 #line 1 "Z:/home/batman/git/VVVVVV/GameProject/gamecode.c"
-
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
+#line 9 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
 sbit LCD_RS at RB4_bit;
 sbit LCD_EN at RB5_bit;
 sbit LCD_D4 at RB0_bit;
@@ -12,49 +13,36 @@ sbit LCD_D4_Direction at TRISB0_bit;
 sbit LCD_D5_Direction at TRISB1_bit;
 sbit LCD_D6_Direction at TRISB2_bit;
 sbit LCD_D7_Direction at TRISB3_bit;
-
-
-sbit gravityBtn at PORTC.B5;
-sbit leftBtn at PORTC.B6;
-sbit rightBtn at PORTC.B7;
-
-static const char levelCount = 2;
+#line 26 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
+void initLCD();
+#line 32 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
 static const char lcdWidth = 20;
 static const char lcdHeight = 4;
+static const char lcdCharLength = 8;
+static const char charEntryMemory = 64;
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/menu.h"
+#line 7 "z:/home/batman/git/vvvvvv/gameproject/menu.h"
+void loadMenu();
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
+#line 10 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
+void loadLevel(char levelIndex);
+char getTileId(char x, char y);
+#line 18 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
+static char curLevel = 0;
+static const char levels[][lcdHeight*2][lcdWidth] = {
 
-struct Player {
- char x;
- char y;
- char isAirborne;
- short isFaceUp;
-};
-struct Player player = {0, 0, 0, 0};
-
-enum Block {
- undefined = -1,
- air = 0,
- playerU = 1,
- playerD = 2,
- solid = 3,
- spikeU = 4,
- spikeD = 5,
- start = 6,
- goal = 7
-};
-
-static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
-
- {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
- {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-
- {3,3,3,3,3,3,3,3,5,5,5,5,3,3,3,3,3,3,3,3},
+ {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 
- {0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,4,4,3,3},
- {0,3,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0},
+ {1,1,1,1,1,1,1,1,3,3,3,3,1,1,1,1,1,1,1,0},
+ {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 
- {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
- {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}},
+ {0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,3,3,1,1},
+ {0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0},
+
+ {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+ {2,2,0,0,0,0,2,2,2,2,2,2,4,4,4,2,2,2,2,2}},
 
 
  {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
@@ -69,45 +57,28 @@ static const char levels[levelCount][lcdHeight*2][lcdWidth] = {
  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7},
  {3,3,0,0,0,0,3,3,3,3,3,3,4,4,4,3,3,3,3,3}}
 };
-
-static const char lcdCharLength = 8;
-static const char tiles[][lcdCharLength] = {
+static const char levelCount = sizeof(levels) / sizeof(levels[0]);
 
 
- {0b00001010,
- 0b00000000,
- 0b00010001,
- 0b00001110,
- 0b00000000,
- 0b00000000,
- 0b00000000,
- 0b00000000},
+enum Tile {
+ undefined = -1,
+ air = 0,
+ playerU = 1,
+ playerD = 2,
+ solid = 3,
+ spikeU = 4,
+ spikeD = 5,
+ start = 6,
+ goal = 7
+};
 
 
- {0b00000000,
- 0b00000000,
- 0b00000000,
- 0b00000000,
- 0b00001010,
- 0b00000000,
- 0b00010001,
- 0b00001110},
-
+static const char tileSprites[][lcdCharLength] = {
 
  {0b00000000,
  0b00000000,
  0b00000000,
  0b00000000,
- 0b00001110,
- 0b00010001,
- 0b00000000,
- 0b00001010},
-
-
- {0b00001110,
- 0b00010001,
- 0b00000000,
- 0b00001010,
  0b00000000,
  0b00000000,
  0b00000000,
@@ -152,42 +123,96 @@ static const char tiles[][lcdCharLength] = {
  0b00000100,
  0b00001110,
  0b00011111}
-
 };
-static const char tileCount = sizeof(tiles)/sizeof(tiles[0]);
+static const char tileCount = sizeof(tileSprites)/sizeof(tileSprites[0]);
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/player.h"
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
+#line 11 "z:/home/batman/git/vvvvvv/gameproject/player.h"
+sbit gravityBtn at PORTC.B5;
+sbit leftBtn at PORTC.B6;
+sbit rightBtn at PORTC.B7;
 
-char curLevel = 0;
+struct Player {
+ char x, y;
+ char isAirborne, isFaceUp;
+};
+extern struct Player player;
+#line 25 "z:/home/batman/git/vvvvvv/gameproject/player.h"
+void initPlayer();
+void movePlayer();
+void updatePlayerSprite();
+void checkAirborne(signed char gravityDir);
+void clampPlayerPos();
+#line 36 "z:/home/batman/git/vvvvvv/gameproject/player.h"
+static const char playerSprites[][lcdCharLength] = {
+
+ {0b00001010,
+ 0b00000000,
+ 0b00010001,
+ 0b00001110,
+ 0b00000000,
+ 0b00000000,
+ 0b00000000,
+ 0b00000000},
 
 
-int i, j;
+ {0b00000000,
+ 0b00000000,
+ 0b00000000,
+ 0b00000000,
+ 0b00001010,
+ 0b00000000,
+ 0b00010001,
+ 0b00001110},
+
+
+ {0b00001110,
+ 0b00010001,
+ 0b00000000,
+ 0b00001010,
+ 0b00000000,
+ 0b00000000,
+ 0b00000000,
+ 0b00000000},
+
+
+ {0b00000000,
+ 0b00000000,
+ 0b00000000,
+ 0b00000000,
+ 0b00001110,
+ 0b00010001,
+ 0b00000000,
+ 0b00001010}
+};
+#line 6 "Z:/home/batman/git/VVVVVV/GameProject/gamecode.c"
+typedef enum GameState {
+ ST_MENU,
+ ST_PAUSE,
+ ST_INGAME
+} GameState;
+GameState gameState = ST_MENU;
 
 void initialize();
 void initPIC();
-void initLCD();
-void initGame();
-void loadLevel(char);
+void changeGameState(GameState newState);
 void update();
-void combineTiles(char, char);
-char getBlockId(char, char);
-void checkAirborne();
+void goalReached();
 
+
+static const char updateInterval = 50;
 
 void main() {
  initialize();
- loadLevel(0);
+
+ changeGameState(ST_MENU);
  while(1) { update(); }
 }
 
 void initialize() {
  initPIC();
  initLCD();
- initGame();
-}
-
-void initGame() {
-
-
- player;
 }
 
 void initPIC() {
@@ -203,73 +228,31 @@ void initPIC() {
  PORTC = 0b00000000;
 }
 
-void initLCD() {
- Lcd_Init();
- Lcd_Cmd(_LCD_CLEAR);
- Lcd_Cmd(_LCD_CURSOR_OFF);
-
-
- Lcd_RS = 0;
- Lcd_Cmd(64+lcdCharLength);
- Lcd_RS = 1;
-
- for(i = 0; i < tileCount; i++) {
- for(j = 0; j < lcdCharLength; j++) {
- Lcd_Chr_Cp(tiles[i][j]);
+void changeGameState(GameState newState) {
+ if (newState == ST_MENU) {
+ loadMenu();
  }
- }
+ if (gameState == ST_MENU && newState == ST_INGAME) {
 
- Lcd_RS = 0;
- Lcd_Cmd(128);
- Lcd_RS = 1;
-}
-
-void loadLevel(char levelIndex) {
- for(i = 0; i < lcdHeight; i++) {
- for(j = 0; j < lcdWidth; j++) {
- combineTiles(levels[levelIndex][2*i][j], levels[levelIndex][2*i+1][j]);
- Lcd_Chr(i+1, j+1, 0);
+ initPlayer();
  }
- }
-}
-
-void combineTiles(char id1, char id2) {
- char combinedTile[lcdCharLength];
- for(i = 0; i < lcdCharLength; i++) {
- combinedTile[i] = tiles[id1][i] | tiles[id2][i];
- }
- Lcd_RS = 0;
- Lcd_Cmd(64);
- Lcd_RS = 1;
- for(i = 0; i < lcdCharLength; i++) { Lcd_Chr_Cp(combinedTile[i]); }
- Lcd_RS = 0;
- Lcd_Cmd(128);
- Lcd_RS = 1;
-}
-
-char getBlockId(char x, char y) {
- if(x < 0 || x > lcdWidth || y < 0 || y > lcdHeight) { return -1; }
- return levels[curLevel][y][x];
-}
-
-void checkAirborne() {
- short offset;
- char below;
- offset = player.isFaceUp == 1 ? -1 : 1;
- below = getBlockId(player.x, player.y+offset);
- if(below == air ||
- (below == spikeU && player.isFaceUp == 1) ||
- (below == spikeD && player.isFaceUp == 0)) {
- player.isAirborne = 1;
- }
- player.isAirborne = 0;
+ gameState = newState;
 }
 
 void update() {
-#line 288 "Z:/home/batman/git/VVVVVV/GameProject/gamecode.c"
- Lcd_Cmd(_LCD_CLEAR);
- combineTiles(0, 1);
- Lcd_Chr(player.x+1, player.y+1, 0);
+ switch (gameState) {
+ case ST_MENU:
+ break;
+ case ST_INGAME:
+ movePlayer();
+ if(getTileId(player.y+1, player.x+1) == goal) { goalReached(); }
+ break;
+ case ST_PAUSE:
+ break;
+ }
+ delay_ms(updateInterval);
+}
 
- delay_ms(50);
+void goalReached() {
+
 }

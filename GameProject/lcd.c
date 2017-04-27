@@ -1,5 +1,4 @@
 #include "lcd.h"
-
 #include "levels.h"
 
 void initLCD() {

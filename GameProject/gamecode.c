@@ -3,7 +3,7 @@
 #include "levels.h"
 #include "player.h"
 
-typedef enum GameState{
+typedef enum GameState {
   ST_MENU,
 	ST_PAUSE,
 	ST_INGAME
@@ -14,6 +14,7 @@ void initialize();
 void initPIC();
 void changeGameState(GameState newState);
 void update();
+void goalReached();
 
 // Micro controller
 static const char updateInterval = 50; // delay between each update();
@@ -59,11 +60,15 @@ void update() {
     case ST_MENU:
       break;
     case ST_INGAME:
-      updatePlayerSprite();
+    movePlayer();
+    if(getTileId(player.y+1, player.x+1) == goal) { goalReached(); }
       break;
     case ST_PAUSE:
       break;
   }
-
   delay_ms(updateInterval);
+}
+
+void goalReached() {
+  // Woo!
 }
