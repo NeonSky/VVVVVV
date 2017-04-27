@@ -19,7 +19,7 @@ static char curLevel = 0;
 static const char levels[][lcdHeight*2][lcdWidth] = {
   // Level 1
  {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},  // Row 1 (upper)
-  {8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // Row 1 (lower)
+  {5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // Row 1 (lower)
 
   {1,1,1,1,1,1,1,1,3,3,3,3,1,1,1,1,1,1,1,0},  // Row 2 (upper)
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // Row 2 (lower)
@@ -27,7 +27,7 @@ static const char levels[][lcdHeight*2][lcdWidth] = {
   {0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,3,3,1,1},  // Row 3 (upper)
   {0,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0},  // Row 3 (lower)
 
-  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},  // Row 4 (upper)
+  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,1},  // Row 4 (upper)
   {2,2,0,0,0,0,2,2,2,2,2,2,4,4,4,2,2,2,2,2}}, // Row 4 (lower)
 
   // Level 2
@@ -53,8 +53,8 @@ enum Tile {
   halfBlockL = 2,
   spikeU = 3,
   spikeD = 4,
-  start = 8,
-  goal = 9
+  start = 5,
+  goal = 6
 };
 
 // Tile sprites, used to represent the various of tiles on the LCD
@@ -107,7 +107,27 @@ static const char tileSprites[][lcdCharLength] = {
    0b00000000,
    0b00000100,
    0b00001110,
-   0b00011111}
+   0b00011111},
+
+  // Start
+  {0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000},
+
+  // Goal
+  {0b00000000,
+   0b00000000,
+   0b00000100,
+   0b00001110,
+   0b00001110,
+   0b00000100,
+   0b00000000,
+   0b00000000},
 };
 static const char tileCount = sizeof(tileSprites) / sizeof(tileSprites[0]);
 

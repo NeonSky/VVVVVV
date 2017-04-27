@@ -73,10 +73,7 @@ void update() {
   delay_ms(updateInterval);
 }
 
-void gameOver() {
-  changeGameState(ST_GAMEOVER);
-}
-
 void goalReached() {
-  // Woo!
+  if(curLevel+1 < levelCount) { loadLevel(curLevel+1); }
+  else { changeGameState(ST_MENU); }
 }

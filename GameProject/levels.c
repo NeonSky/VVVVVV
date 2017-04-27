@@ -16,7 +16,7 @@ void loadLevel(char levelIndex) {
     }
   }
 
-  initPlayer(playerX, playerY, 0, 1);
+  initPlayer(playerX, playerY, 1);
   changeGameState(ST_INGAME);
 }
 

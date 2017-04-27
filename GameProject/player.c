@@ -2,10 +2,10 @@
 
 struct Player player;
 
-void initPlayer(char x, char y, airborne, faceUp) {
+void initPlayer(char x, char y, char faceUp) {
   player.x = x
   player.y = y;
-  player.isAirborne = airborne;
+  player.isAirborne = 0;
   player.isFaceUp = faceUp;
 }
 
@@ -70,7 +70,7 @@ void updatePlayerSprite() {
 void checkAirborne(signed char gravityDir) {
   short below = getTileId(player.x, player.y + gravityDir);
   if(below == undefined) {
-    gameOver();
+    changeGameState(ST_GAMEOVER);
     return;
   }
 
@@ -81,9 +81,5 @@ void checkAirborne(signed char gravityDir) {
 void checkCurTile() {
   short tileId = getTileId(player.y, player.x);
   if(tileId == goal) { goalReached(); }
-  else if(tileId == spikeU || tileId == spikeD) { playerDied(); }
-}
-
-void playerDied() {
-  changeGameState(ST_GAMEOVER);
+  else if(tileId == spikeU || tileId == spikeD) { changeGameState(ST_GAMEOVER); }
 }
