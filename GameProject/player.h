@@ -27,6 +27,7 @@ void movePlayer();
 void updatePlayerSprite();
 void checkAirborne();
 void clampPlayerPos();
+void playerDied();
 
 
 /*

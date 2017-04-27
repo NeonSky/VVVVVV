@@ -30,39 +30,56 @@ void movePlayer() {
   }
   clampPlayerPos();
   updatePlayerSprite();
+  checkCurTile();
 }
 
+// Clamp player position in bounds of the LCD screen
 void clampPlayerPos() {
-  if(player.y < 0) { player.y = 0; }
+  if(player.y < 1) { player.y = 1; }
   else if(player.y > lcdHeight) { player.y = lcdHeight; }
-  if(player.x < 0) { player.x = 0; }
+  if(player.x < 1) { player.x = 1; }
   else if(player.x > lcdWidth) { player.x = lcdWidth; }
 }
 
 void updatePlayerSprite() {
   char i;
   signed char gravityDir = (player.isFaceUp == 1) ? -1 : 1;
-  char tileId = getTileId(player.x, player.y - gravityDir);
-  char playerState = player.y % 2 + 2*(1-player.isFaceUp);
+  short tileId = getTileId(player.x, player.y - gravityDir);
+  char playerSprite = player.y % 2 + 2*(1-player.isFaceUp);
   char combinedTile[lcdCharLength];
 
+  // Combine player sprite with upper/lower tile sprite
   for(i = 0; i < lcdCharLength; i++) {
-    combinedTile[i] = playerSprites[playerState][i] | tileSprites[tileId][i];
+    combinedTile[i] = playerSprites[playerSprite][i] | tileSprites[tileId][i];
   }
 
+  // Write combined tile to memory
   Lcd_Cmd(charEntryMemory);
   for(i = 0; i < lcdCharLength; i++) { Lcd_Chr_Cp(combinedTile[i]); }
   Lcd_Cmd(_LCD_RETURN_HOME);
+
+  // Draw player sprite to LCD screen
   Lcd_Chr((player.y-1)/2 + 1, player.x, 0);
 }
 
+// Check if the player is falling or not
 void checkAirborne(signed char gravityDir) {
-  char below = getTileId(player.x, player.y + gravityDir);
-
-  if(below == air ||
-    (below == spikeU && player.isFaceUp == 1) ||
-    (below == spikeD && player.isFaceUp == 0)) {
-    player.isAirborne = 1;
+  short below = getTileId(player.x, player.y + gravityDir);
+  if(below == undefined) {
+    gameOver();
+    return;
   }
-  player.isAirborne = 0;
+
+  player.isAirborne = (below == air) ? 1 : 0;
+}
+
+// Check current tile for objectives and dangers
+void checkCurTile() {
+  short tileId = getTileId(player.y, player.x);
+  if(tileId == goal) { goalReached(); }
+  else if(tileId == spikeU || tileId == spikeD) { playerDied(); }
+}
+
+void playerDied() {
+  changeGameState(ST_GAMEOVER);
 }

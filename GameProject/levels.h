@@ -8,7 +8,7 @@
     Functions
 */
 void loadLevel(char levelIndex);
-char getTileId(char x, char y);
+short getTileId(char x, char y);
 
 
 
@@ -110,6 +110,6 @@ static const char tileSprites[][lcdCharLength] = {
    0b00001110,
    0b00011111}
 };
-static const char tileCount = sizeof(tileSprites)/sizeof(tileSprites[0]);
+static const char tileCount = sizeof(tileSprites) / sizeof(tileSprites[0]);
 
 #endif

@@ -2,22 +2,26 @@
 #include "levels.h"
 #include "player.h"
 
+// Game states, used for various game screens
 typedef enum GameState {
   ST_MENU,
 	ST_PAUSE,
-	ST_INGAME
+	ST_INGAME,
+  ST_GAMEOVER
 } GameState;
 GameState gameState = ST_MENU;
 
+// Function declarations
 void initialize();
 void initPIC();
-void initGame();
 void update();
 void goalReached();
 
 // Micro controller
 static const char updateInterval = 50; // delay between each update();
 
+
+// Driver program
 void main() {
   initialize();
   loadLevel(0);
@@ -27,7 +31,7 @@ void main() {
 void initialize() {
   initPIC();
   initLCD();
-  initGame();
+  initPlayer();
 }
 
 void initPIC() {
@@ -43,29 +47,29 @@ void initPIC() {
   PORTC = 0b00000000;  // Reset PORTC
 }
 
-void initGame() {
-  initPlayer();
-}
-
 void changeGameState(GameState newState) {
-  if (gameState == ST_MENU && newState == ST_INGAME) {
+  if(gameState == ST_MENU && newState == ST_INGAME) {
     // loadLevel();
   }
   gameState = newState;
 }
 
+// Game loop, called every update interval
 void update() {
-  switch (gameState) {
+  switch(gameState) {
     case ST_MENU:
       break;
     case ST_INGAME:
-    movePlayer();
-    if(getBlockId(player.y+1, player.x+1) == goal) { goalReached(); }
+      movePlayer();
       break;
     case ST_PAUSE:
       break;
   }
   delay_ms(updateInterval);
+}
+
+void gameOver() {
+  changeGameState(ST_GAMEOVER);
 }
 
 void goalReached() {
