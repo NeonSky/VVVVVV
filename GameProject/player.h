@@ -27,6 +27,7 @@ void movePlayer();
 void updatePlayerSprite();
 void checkAirborne(signed char gravityDir);
 void clampPlayerPos();
+void playerDied();
 
 
 /*

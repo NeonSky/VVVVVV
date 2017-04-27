@@ -6,6 +6,7 @@
 
 GameState gameState = ST_MENU;
 
+// Function declarations
 void initialize();
 void initPIC();
 void changeGameState(GameState newState);
@@ -15,9 +16,10 @@ void goalReached();
 // Micro controller
 static const char updateInterval = 50; // delay between each update();
 
+
+// Driver program
 void main() {
   initialize();
-
   changeGameState(ST_MENU);
   while(1) { update(); }
 }
@@ -25,6 +27,7 @@ void main() {
 void initialize() {
   initPIC();
   initLCD();
+  initPlayer();
 }
 
 void initPIC() {
@@ -41,24 +44,23 @@ void initPIC() {
 }
 
 void changeGameState(GameState newState) {
-  if (newState == ST_MENU) {
+  if(newState == ST_MENU) {
     loadMenu();
   }
-  if (gameState == ST_MENU && newState == ST_INGAME) {
-    // loadLevel();
+  else if(gameState == ST_MENU && newState == ST_INGAME) {
     initPlayer();
   }
   gameState = newState;
 }
 
+// Game loop, called every update interval
 void update() {
-  switch (gameState) {
+  switch(gameState) {
     case ST_MENU:
       updateMenu();
       break;
     case ST_INGAME:
-    movePlayer();
-    if(getTileId(player.y+1, player.x+1) == goal) { goalReached(); }
+      movePlayer();
       break;
     case ST_PAUSE:
       break;
@@ -67,5 +69,6 @@ void update() {
 }
 
 void goalReached() {
-  // Woo!
+  if(curLevel+1 < levelCount) { loadLevel(curLevel+1); }
+  else { changeGameState(ST_MENU); }
 }
