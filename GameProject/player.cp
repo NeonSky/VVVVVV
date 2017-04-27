@@ -1,18 +1,5 @@
-#line 1 "Z:/home/batman/git/VVVVVV/GameProject/gamecode.c"
-#line 1 "z:/home/batman/git/vvvvvv/gameproject/gamestate.h"
-
-
-
-typedef enum GameState {
- ST_MENU,
- ST_PAUSE,
- ST_INGAME,
- ST_GOAL,
- ST_GAMEOVER
-} GameState;
-extern GameState gameState;
-
-void changeGameState(GameState newState);
+#line 1 "Z:/home/batman/git/VVVVVV/GameProject/player.c"
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/player.h"
 #line 1 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
 #line 9 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
 sbit LCD_RS at RB4_bit;
@@ -34,18 +21,6 @@ static const char lcdWidth = 20;
 static const char lcdHeight = 4;
 static const char lcdCharLength = 8;
 static const char charEntryMemory = 64;
-#line 1 "z:/home/batman/git/vvvvvv/gameproject/menu.h"
-#line 9 "z:/home/batman/git/vvvvvv/gameproject/menu.h"
-sbit selectBtn at PORTC.B5;
-sbit upBtn at PORTC.B6;
-sbit downBtn at PORTC.B7;
-
-extern char menuSelection;
-extern char prevMenuSelection;
-#line 19 "z:/home/batman/git/vvvvvv/gameproject/menu.h"
-void loadMenu();
-void updateMenu();
-void printSelectableLevels(char start);
 #line 1 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
 #line 1 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
 #line 10 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
@@ -167,9 +142,6 @@ static const char tileSprites[][lcdCharLength] = {
  0b00000000},
 };
 static const char tileCount = sizeof(tileSprites) / sizeof(tileSprites[0]);
-#line 1 "z:/home/batman/git/vvvvvv/gameproject/player.h"
-#line 1 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
-#line 1 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
 #line 11 "z:/home/batman/git/vvvvvv/gameproject/player.h"
 sbit gravityBtn at PORTC.B5;
 sbit leftBtn at PORTC.B6;
@@ -230,74 +202,101 @@ static const char playerSprites[][lcdCharLength] = {
  0b00000000,
  0b00001010}
 };
-#line 7 "Z:/home/batman/git/VVVVVV/GameProject/gamecode.c"
-GameState gameState = ST_MENU;
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/gamestate.h"
 
 
-void initialize();
-void initPIC();
+
+typedef enum GameState {
+ ST_MENU,
+ ST_PAUSE,
+ ST_INGAME,
+ ST_GOAL,
+ ST_GAMEOVER
+} GameState;
+extern GameState gameState;
+
 void changeGameState(GameState newState);
-void update();
+#line 4 "Z:/home/batman/git/VVVVVV/GameProject/player.c"
+struct Player player;
 
-
-static const char updateInterval = 50;
-
-
-
-void main() {
- initialize();
- changeGameState(ST_MENU);
- while(1) { update(); }
+void initPlayer(char x, char y, char faceUp) {
+ player.x = x;
+ player.y = y;
+ player.isAirborne = 0;
+ player.isFaceUp = faceUp;
 }
 
-void initialize() {
- initPIC();
- initLCD();
-}
+void movePlayer() {
+ signed char gravityDir = (player.isFaceUp == 1) ? -1 : 1;
+ checkAirborne(gravityDir);
 
-void initPIC() {
- OSCCON = 0b01110111;
- ANSEL = 0b00000000;
- ANSELH = 0b00000000;
 
- TRISA = 0b00000000;
- TRISB = 0b00000000;
- TRISC = 0b00000000;
- PORTA = 0b00000000;
- PORTB = 0b00000000;
- PORTC = 0b00000000;
-}
-
-void changeGameState(GameState newState) {
-
- if (newState == ST_MENU) {
- loadMenu();
-
- printSelectableLevels (0);
+ if(player.isAirborne) {
+ player.y += gravityDir;
+ clampPlayerPos();
+ return;
  }
 
- gameState = newState;
+
+ if(leftBtn) {
+ if(getTileId(player.x-1, player.y) == air) { player.x--; }
+ }
+ else if(rightBtn) {
+ if(getTileId(player.x+1, player.y) == air) { player.x++; }
+ }
+ else if(gravityBtn) {
+ player.isFaceUp = ~player.isFaceUp;
+ }
+
+ clampPlayerPos();
+ updatePlayerSprite();
+ checkCurTile();
 }
 
 
-void update() {
- switch(gameState) {
- case ST_MENU:
- updateMenu();
- break;
- case ST_INGAME:
- movePlayer();
- break;
- case ST_PAUSE:
- break;
- case ST_GOAL:
- if(curLevel+1 < levelCount) { loadLevel(curLevel+1); }
- else { changeGameState(ST_MENU); }
- break;
- case ST_GAMEOVER:
+void clampPlayerPos() {
+ if(player.y < 1) { player.y = 1; }
+ else if(player.y > lcdHeight) { player.y = lcdHeight; }
+ if(player.x < 1) { player.x = 1; }
+ else if(player.x > lcdWidth) { player.x = lcdWidth; }
+}
 
- changeGameState(ST_MENU);
- break;
+void updatePlayerSprite() {
+ char i;
+
+ signed char gravityDir = (player.isFaceUp == 1) ? -1 : 1;
+ short tileId = getTileId(player.x, player.y - gravityDir);
+ char playerSprite = player.y % 2 + 2*(1-player.isFaceUp);
+ char combinedTile[lcdCharLength];
+
+
+ for(i = 0; i < lcdCharLength; i++) {
+ combinedTile[i] = playerSprites[playerSprite][i] | tileSprites[tileId][i];
  }
- delay_ms(updateInterval);
+
+
+ Lcd_Cmd(charEntryMemory);
+ for(i = 0; i < lcdCharLength; i++) { Lcd_Chr_Cp(combinedTile[i]); }
+ Lcd_Cmd(_LCD_RETURN_HOME);
+
+
+ Lcd_Chr((player.y-1)/2 + 1, player.x, 0);
+}
+
+
+void checkAirborne(signed char gravityDir) {
+ short below = getTileId(player.x, player.y + gravityDir);
+ if(below == undefined) {
+ changeGameState(ST_GAMEOVER);
+ return;
+ }
+
+ player.isAirborne = (below == air) ? 1 : 0;
+}
+
+
+void checkCurTile() {
+ short tileId = getTileId(player.y, player.x);
+ if(tileId == goal) { changeGameState(ST_GOAL); }
+ else if(tileId == spikeU || tileId == spikeD) { changeGameState(ST_GAMEOVER); }
 }

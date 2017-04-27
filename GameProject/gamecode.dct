@@ -404,6 +404,7 @@ cf_write_sector
 changegamestate
 character8x7
 checkairborne
+checkcurtile
 chs0
 chs0_bit
 chs1
@@ -477,6 +478,8 @@ double2int
 double2longint
 double2longword
 double2word
+downbtn
+downbtn
 eccpas
 eccpas0
 eccpas0_bit
@@ -585,7 +588,7 @@ go_done
 go_done_bit
 go_not_done
 go_not_done_bit
-goalreached
+gravitybtn
 gravitybtn
 gravitybtn
 halfbits
@@ -742,6 +745,7 @@ ldexp
 ldiv
 leftbtn
 leftbtn
+leftbtn
 loadlevel
 loadmenu
 log
@@ -778,6 +782,7 @@ memcmp
 memcpy
 memmove
 memset
+menuselection
 min
 mm_error_
 mm_freememtable
@@ -895,6 +900,8 @@ portc
 porte
 pow
 pr2
+prevmenuselection
+printselectablelevels
 prsen
 prsen_bit
 ps0
@@ -1029,6 +1036,7 @@ read_write_bit
 res032
 rightbtn
 rightbtn
+rightbtn
 rp0
 rp0_bit
 rp1
@@ -1122,6 +1130,8 @@ sckp_bit
 scs
 scs_bit
 sdiv3232l
+selectbtn
+selectbtn
 sen
 sen_bit
 sendb
@@ -1606,7 +1616,10 @@ ulpwuie
 ulpwuie_bit
 ulpwuif
 ulpwuif_bit
+upbtn
+upbtn
 update
+updatemenu
 updateplayersprite
 vcfg0
 vcfg0_bit

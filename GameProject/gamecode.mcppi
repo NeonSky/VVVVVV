@@ -28,15 +28,11 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=8
+Count=4
 File0=gamecode.c
 File1=levels.h
-File2=lcd.h
-File3=lcd.c
-File4=levels.c
-File5=player.c
-File6=player.h
-File7=menu.c
+File2=..\..\..\.wine\drive_c\users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\__Lib_Delays.c
+File3=menu.c
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]
@@ -100,4 +96,5 @@ File40=TouchPanel
 File41=Trigonometry
 File42=UART
 [EXPANDED_NODES]
-Count=0
+Node0=Sources
+Count=1

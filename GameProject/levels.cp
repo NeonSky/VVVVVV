@@ -1,18 +1,5 @@
-#line 1 "Z:/home/batman/git/VVVVVV/GameProject/gamecode.c"
-#line 1 "z:/home/batman/git/vvvvvv/gameproject/gamestate.h"
-
-
-
-typedef enum GameState {
- ST_MENU,
- ST_PAUSE,
- ST_INGAME,
- ST_GOAL,
- ST_GAMEOVER
-} GameState;
-extern GameState gameState;
-
-void changeGameState(GameState newState);
+#line 1 "Z:/home/batman/git/VVVVVV/GameProject/levels.c"
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
 #line 1 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
 #line 9 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
 sbit LCD_RS at RB4_bit;
@@ -34,20 +21,6 @@ static const char lcdWidth = 20;
 static const char lcdHeight = 4;
 static const char lcdCharLength = 8;
 static const char charEntryMemory = 64;
-#line 1 "z:/home/batman/git/vvvvvv/gameproject/menu.h"
-#line 9 "z:/home/batman/git/vvvvvv/gameproject/menu.h"
-sbit selectBtn at PORTC.B5;
-sbit upBtn at PORTC.B6;
-sbit downBtn at PORTC.B7;
-
-extern char menuSelection;
-extern char prevMenuSelection;
-#line 19 "z:/home/batman/git/vvvvvv/gameproject/menu.h"
-void loadMenu();
-void updateMenu();
-void printSelectableLevels(char start);
-#line 1 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
-#line 1 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
 #line 10 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
 void loadLevel(char levelIndex);
 short getTileId(char x, char y);
@@ -167,6 +140,20 @@ static const char tileSprites[][lcdCharLength] = {
  0b00000000},
 };
 static const char tileCount = sizeof(tileSprites) / sizeof(tileSprites[0]);
+#line 1 "z:/home/batman/git/vvvvvv/gameproject/gamestate.h"
+
+
+
+typedef enum GameState {
+ ST_MENU,
+ ST_PAUSE,
+ ST_INGAME,
+ ST_GOAL,
+ ST_GAMEOVER
+} GameState;
+extern GameState gameState;
+
+void changeGameState(GameState newState);
 #line 1 "z:/home/batman/git/vvvvvv/gameproject/player.h"
 #line 1 "z:/home/batman/git/vvvvvv/gameproject/lcd.h"
 #line 1 "z:/home/batman/git/vvvvvv/gameproject/levels.h"
@@ -230,74 +217,31 @@ static const char playerSprites[][lcdCharLength] = {
  0b00000000,
  0b00001010}
 };
-#line 7 "Z:/home/batman/git/VVVVVV/GameProject/gamecode.c"
-GameState gameState = ST_MENU;
+#line 6 "Z:/home/batman/git/VVVVVV/GameProject/levels.c"
+void loadLevel(char levelIndex) {
+ char i, j, tile, playerX = 1, playerY = 1;
+ curLevel = levelIndex;
 
 
-void initialize();
-void initPIC();
-void changeGameState(GameState newState);
-void update();
+ Lcd_Cmd (_LCD_CLEAR);
 
 
-static const char updateInterval = 50;
-
-
-
-void main() {
- initialize();
- changeGameState(ST_MENU);
- while(1) { update(); }
-}
-
-void initialize() {
- initPIC();
- initLCD();
-}
-
-void initPIC() {
- OSCCON = 0b01110111;
- ANSEL = 0b00000000;
- ANSELH = 0b00000000;
-
- TRISA = 0b00000000;
- TRISB = 0b00000000;
- TRISC = 0b00000000;
- PORTA = 0b00000000;
- PORTB = 0b00000000;
- PORTC = 0b00000000;
-}
-
-void changeGameState(GameState newState) {
-
- if (newState == ST_MENU) {
- loadMenu();
-
- printSelectableLevels (0);
+ for(i = 0; i < lcdHeight; i++) {
+ for(j = 0; j < lcdWidth; j++) {
+ tile = max(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
+ if(tile == start) {
+ playerX = j+1;
+ playerY = i+1;
+ }
+ Lcd_Chr(i+1, j+1, tile+1);
+ }
  }
 
- gameState = newState;
+ initPlayer(playerX, playerY, 1);
+ changeGameState(ST_INGAME);
 }
 
-
-void update() {
- switch(gameState) {
- case ST_MENU:
- updateMenu();
- break;
- case ST_INGAME:
- movePlayer();
- break;
- case ST_PAUSE:
- break;
- case ST_GOAL:
- if(curLevel+1 < levelCount) { loadLevel(curLevel+1); }
- else { changeGameState(ST_MENU); }
- break;
- case ST_GAMEOVER:
-
- changeGameState(ST_MENU);
- break;
- }
- delay_ms(updateInterval);
+short getTileId(char x, char y) {
+ if(x < 0 || x > lcdWidth || y < 0 || y > lcdHeight) { return -1; }
+ return levels[curLevel][y-1][x-1];
 }
