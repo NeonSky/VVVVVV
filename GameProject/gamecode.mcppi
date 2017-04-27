@@ -45,7 +45,8 @@ Path0=Z:\home\batman\.wine\drive_c\users\Public\Documents\Mikroelektronika\mikro
 Path1=Z:\home\batman\.wine\drive_c\users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\
 Path2=Z:\home\batman\git\VVVVVV\GameProject\
 [HEADER_PATH]
-Count=0
+Count=1
+Path0=Z:\home\batman\git\VVVVVV\GameProject\
 [HEADERS]
 Count=0
 [PLDS]

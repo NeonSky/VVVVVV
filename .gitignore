@@ -40,3 +40,10 @@
 *.asm
 *.hex
 *.ini
+*.cp
+*.bmk
+*.brk
+*.cfg
+*.dct
+*.dlt
+*.log
