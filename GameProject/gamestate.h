@@ -4,7 +4,8 @@
 typedef enum GameState {
   ST_MENU,
 	ST_PAUSE,
-	ST_INGAME
+	ST_INGAME,
+  ST_GAMEOVER
 } GameState;
 extern GameState gameState;
 
