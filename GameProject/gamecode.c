@@ -7,6 +7,9 @@ void initPIC();
 void initGame();
 void update();
 
+// Micro controller
+static const char updateInterval = 50; // delay between each update();
+
 void main() {
   initialize();
   loadLevel(0);
@@ -19,21 +22,21 @@ void initialize() {
   initGame();
 }
 
-void initGame() {
-  initPlayer();
+void initPIC() {
+  OSCCON = 0b01110111; // 8 MHz clock frequency
+  ANSEL = 0b00000000;  // No analog inputs needed
+  ANSELH = 0b00000000; // No analog inputs needed
+
+  TRISA = 0b00000000;  // PORTA outputs
+  TRISB = 0b00000000;  // PORTB outputs
+  TRISC = 0b00000000;  // PORTC outputs and inputs on F5-7
+  PORTA = 0b00000000;  // Reset PORTA
+  PORTB = 0b00000000;  // Reset PORTB
+  PORTC = 0b00000000;  // Reset PORTC
 }
 
-void initPIC() {
-  OSCCON = 0b01110111; // 8 MHz
-  ANSEL = 0b00000000;
-  ANSELH = 0b00000000;
-
-  TRISA = 0b00000000;
-  TRISB = 0b00000000;
-  TRISC = 0b00000000;
-  PORTA = 0b00000000;
-  PORTB = 0b00000000;
-  PORTC = 0b00000000;
+void initGame() {
+  initPlayer();
 }
 
 void update() {
@@ -70,10 +73,6 @@ void update() {
     }
   }*/
 
-  signed char player_dir = player.isFaceUp == 1 ? -1 : 1;
-  char player_state = player.y % 2 + 2*(1-player.isFaceUp);
-  updatePlayerChar(player_state, levels[curLevel][player.y-player_dir][player.x]);
-  drawPlayer();
-
-  delay_ms(50);
+  updatePlayerSprite();
+  delay_ms(updateInterval);
 }

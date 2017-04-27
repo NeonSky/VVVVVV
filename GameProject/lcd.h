@@ -29,8 +29,9 @@ void initLCD();
 /*
     Constants
 */
-static const char lcdWidth = 20;
-static const char lcdHeight = 4;
-static const char lcdCharLength = 8;
+static const char lcdWidth = 20; // Width of LCD, measured in cells
+static const char lcdHeight = 4; // Height of LCD, measured in cells
+static const char lcdCharLength = 8; // Bytes to store a custom char
+static const char charEntryMemory = 64; // Memory to overwrite for custom chars
 
 #endif
