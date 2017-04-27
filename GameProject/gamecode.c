@@ -2,6 +2,13 @@
 #include "levels.h"
 #include "player.h"
 
+typedef enum GameState {
+  ST_MENU,
+	ST_PAUSE,
+	ST_INGAME
+} GameState;
+GameState gameState = ST_MENU;
+
 void initialize();
 void initPIC();
 void initGame();
@@ -40,9 +47,24 @@ void initGame() {
   initPlayer();
 }
 
+void changeGameState(GameState newState) {
+  if (gameState == ST_MENU && newState == ST_INGAME) {
+    // loadLevel();
+  }
+  gameState = newState;
+}
+
 void update() {
-  movePlayer();
-  if(getBlockId(player.y+1, player.x+1) == goal) { goalReached(); }
+  switch (gameState) {
+    case ST_MENU:
+      break;
+    case ST_INGAME:
+    movePlayer();
+    if(getBlockId(player.y+1, player.x+1) == goal) { goalReached(); }
+      break;
+    case ST_PAUSE:
+      break;
+  }
   delay_ms(updateInterval);
 }
 
