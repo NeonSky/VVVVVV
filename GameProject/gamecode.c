@@ -1,13 +1,9 @@
+#include "gamestate.h"
 #include "lcd.h"
 #include "menu.h"
 #include "levels.h"
 #include "player.h"
 
-typedef enum GameState {
-  ST_MENU,
-	ST_PAUSE,
-	ST_INGAME
-} GameState;
 GameState gameState = ST_MENU;
 
 void initialize();
@@ -58,6 +54,7 @@ void changeGameState(GameState newState) {
 void update() {
   switch (gameState) {
     case ST_MENU:
+      updateMenu();
       break;
     case ST_INGAME:
     movePlayer();

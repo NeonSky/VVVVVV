@@ -4,6 +4,10 @@ void loadLevel(char levelIndex) {
   char i, j, tile;
   curLevel = levelIndex;
 
+  // Clear screen
+  Lcd_Cmd (_LCD_CLEAR);
+
+  // Print Level
   for(i = 0; i < lcdHeight; i++) {
     for(j = 0; j < lcdWidth; j++) {
       tile = max(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
