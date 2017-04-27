@@ -1,4 +1,6 @@
 #include "levels.h"
+#include "gamestate.h"
+#include "player.h"
 
 // Displays a level to the LCD
 void loadLevel(char levelIndex) {

@@ -1,9 +1,10 @@
 #include "player.h"
+#include "gamestate.h"
 
 struct Player player;
 
 void initPlayer(char x, char y, char faceUp) {
-  player.x = x
+  player.x = x;
   player.y = y;
   player.isAirborne = 0;
   player.isFaceUp = faceUp;
@@ -80,6 +81,6 @@ void checkAirborne(signed char gravityDir) {
 // Check current tile for objectives and dangers
 void checkCurTile() {
   short tileId = getTileId(player.y, player.x);
-  if(tileId == goal) { goalReached(); }
+  if(tileId == goal) { changeGameState(ST_GOAL); }
   else if(tileId == spikeU || tileId == spikeD) { changeGameState(ST_GAMEOVER); }
 }

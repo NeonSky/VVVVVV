@@ -22,12 +22,13 @@ extern struct Player player;
 /*
     Functions
 */
-void initPlayer();
+void initPlayer(char x, char y, char faceUp);
 void movePlayer();
 void updatePlayerSprite();
 void checkAirborne(signed char gravityDir);
 void clampPlayerPos();
 void playerDied();
+void checkCurTile();
 
 
 /*

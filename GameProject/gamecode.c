@@ -11,7 +11,6 @@ void initialize();
 void initPIC();
 void changeGameState(GameState newState);
 void update();
-void goalReached();
 
 // Micro controller
 static const char updateInterval = 50; // delay between each update();
@@ -27,7 +26,6 @@ void main() {
 void initialize() {
   initPIC();
   initLCD();
-  initPlayer();
 }
 
 void initPIC() {
@@ -44,12 +42,13 @@ void initPIC() {
 }
 
 void changeGameState(GameState newState) {
-  if(newState == ST_MENU) {
+
+  if (newState == ST_MENU) {
     loadMenu();
+    // Print selectable levels 0-3 ( needed here because of limited call stack )
+    printSelectableLevels (0);
   }
-  else if(gameState == ST_MENU && newState == ST_INGAME) {
-    initPlayer();
-  }
+
   gameState = newState;
 }
 
@@ -64,11 +63,14 @@ void update() {
       break;
     case ST_PAUSE:
       break;
+    case ST_GOAL:
+      if(curLevel+1 < levelCount) { loadLevel(curLevel+1); }
+      else { changeGameState(ST_MENU); }
+      break;
+    case ST_GAMEOVER:
+      // TODO: Play gameover scene
+      changeGameState(ST_MENU);
+      break;
   }
   delay_ms(updateInterval);
-}
-
-void goalReached() {
-  if(curLevel+1 < levelCount) { loadLevel(curLevel+1); }
-  else { changeGameState(ST_MENU); }
 }
