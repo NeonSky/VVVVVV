@@ -34,7 +34,6 @@
 
 # Generated Project files
 *.lst
-*.mcl
 *.txt
 *.dic
 *.asm
