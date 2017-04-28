@@ -3,8 +3,8 @@
 
 typedef enum GameState {
   ST_MENU,
-	ST_PAUSE,
-	ST_INGAME,
+  ST_PAUSE,
+  ST_INGAME,
   ST_GOAL,
   ST_GAMEOVER
 } GameState;
