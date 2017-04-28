@@ -7,7 +7,7 @@ char __internal_i;
 #define __PRINT(Y, X, STRING, LENGTH)                                   \
 Lcd_Chr ( (Y), (X), (STRING)[0]);                                       \
 for (__internal_i = 1; __internal_i < (LENGTH)-1; __internal_i++)       \
-  Lcd_Chr_Cp ((STRING)[__internal_i]);                                  \
+  Lcd_Chr_Cp ((STRING)[__internal_i]);
 
 char menuSelection = 0;
 char prevMenuSelection = 0;
@@ -15,16 +15,16 @@ char prevMenuSelection = 0;
 void loadMenu () {
   // Print Menu Title
   char i;
-  char menuTitle[] = "Menu";
+  char menuTitle[] = "Level Select";
   char menuTitleLength = sizeof(menuTitle)/sizeof(menuTitle[0]);
-  char menuTitlePos = lcdWidth/2-menuTitleLength/2;
+  char menuTitlePos = lcdWidth/2-menuTitleLength/2+1;
 
   Lcd_Cmd(_LCD_CLEAR);
   __PRINT(1, menuTitlePos, menuTitle, menuTitleLength);
 }
 
 void printSelectableLevels(char start) {
-  static const char levelsTextIndent = 4;
+  static const char levelsTextIndent = 7;
   char i;
   char levelsToPrint = min(levelCount, 3);
   char baseString[] = "Level ";
@@ -38,23 +38,24 @@ void printSelectableLevels(char start) {
 
 void updateMenu() {
   static const char selectionIndent = 2;
-  char shouldUpdate = prevMenuSelection != menuSelection;
 
   // Clear current arrow
-  if(shouldUpdate) Lcd_Out (2+prevMenuSelection%3, selectionIndent, "  ");
+  Lcd_Out(2+menuSelection%3, selectionIndent, "  ");
 
   // Poll user input
-  // TODO: förhindra kontaktstudsar
   if (selectBtn) {
     loadLevel(menuSelection);
+    return;
   }
-
-  prevMenuSelection = menuSelection;
   if (upBtn) {
-    menuSelection = (menuSelection-1)%levelCount;
+    if (menuSelection <= 0) menuSelection = levelCount-1;
+    else --menuSelection;
+    delay_ms(150);
   }
-  if (downBtn) {
-    menuSelection = (menuSelection+1)%levelCount;
+  else if (downBtn) {
+    if (menuSelection >= levelCount-1) menuSelection = 0;
+    else ++menuSelection;
+    delay_ms(150);
   }
 
   // TODO: update printed levels if selection reaches above or below screen
@@ -66,5 +67,5 @@ void updateMenu() {
   */
 
   // Print selection arrow
-  if(shouldUpdate) Lcd_Out (2+menuSelection%3, selectionIndent, "->");
+  Lcd_Out (2+menuSelection%3, selectionIndent, "->");
 }

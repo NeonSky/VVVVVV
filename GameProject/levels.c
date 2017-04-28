@@ -13,12 +13,16 @@ void loadLevel(char levelIndex) {
   // Print Level
   for(i = 0; i < lcdHeight; i++) {
     for(j = 0; j < lcdWidth; j++) {
-      tile = max(levels[curLevel][2*i][j], levels[curLevel][2*i+1][j]);
+      tile = loadTile(j+1, i+1);
       if(tile == start) {
-        playerX = j+1;
-        playerY = i+1;
+        if(levels[curLevel][2*i][j] == start) {
+          playerX = j+1;
+          playerY = 2*i+1;
+        } else {
+          playerX = j+1;
+          playerY = (2*i)+2;
+        }
       }
-      Lcd_Chr(i+1, j+1, tile+1);
     }
   }
 
@@ -26,7 +30,22 @@ void loadLevel(char levelIndex) {
   changeGameState(ST_INGAME);
 }
 
+char loadTile(char x, char y) {
+  char upperTile = levels[curLevel][2*(y-1)][x-1];
+  char lowerTile = levels[curLevel][2*(y-1)+1][x-1];
+  char priorityTile = max(upperTile, lowerTile);
+  
+  if(priorityTile == start) { Lcd_Chr(y, x, 1+min(upperTile, lowerTile)); }
+  else { Lcd_Chr(y, x, 1+priorityTile); }
+  return priorityTile;
+}
+
 short getTileId(char x, char y) {
-  if(x < 0 || x > lcdWidth || y < 0 || y > lcdHeight) { return -1; }
+  if(x < 1 || x > lcdWidth || y < 1 || y > lcdHeight*2) { return -1; }
   return levels[curLevel][y-1][x-1];
+}
+
+char isTraversable(char x, char y) {
+  char tileId = getTileId(x, y);
+  return (tileId == air || tileId == start || tileId == goal || tileId == spikeU || tileId == spikeD);
 }

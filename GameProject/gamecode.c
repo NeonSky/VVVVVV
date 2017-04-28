@@ -36,7 +36,7 @@ void initPIC() {
 
   TRISA = 0b00000000;  // PORTA outputs
   TRISB = 0b00000000;  // PORTB outputs
-  TRISC = 0b00000000;  // PORTC outputs and inputs on F5-7
+  TRISC = 0xFF;        // PORTC Inputs
   PORTA = 0b00000000;  // Reset PORTA
   PORTB = 0b00000000;  // Reset PORTB
   PORTC = 0b00000000;  // Reset PORTC

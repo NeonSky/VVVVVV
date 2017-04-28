@@ -8,7 +8,9 @@
     Functions
 */
 void loadLevel(char levelIndex);
+char loadTile(char x, char y);
 short getTileId(char x, char y);
+char isTraversable(char x, char y);
 
 
 

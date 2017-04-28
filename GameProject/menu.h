@@ -11,7 +11,6 @@ sbit upBtn at PORTC.B6;
 sbit downBtn at PORTC.B7;
 
 extern char menuSelection;
-extern char prevMenuSelection;
 
 /*
     Functions
