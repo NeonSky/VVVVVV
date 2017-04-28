@@ -16,8 +16,14 @@ extern char prevMenuSelection;
 /*
     Functions
 */
+
+// Initializes and prints menu state barebones
 void loadMenu();
-void updateMenu();
+
+// Prints selectable levels - with arrow pointing to currently selected one
 void printSelectableLevels(char start);
+
+// Polls user input, and prints selected menu
+void updateMenu();
 
 #endif

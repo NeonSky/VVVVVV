@@ -2,6 +2,13 @@
 #include "lcd.h"
 #include "levels.h"
 
+char __internal_i;
+
+#define __PRINT(Y, X, STRING, LENGTH)                                   \
+Lcd_Chr ( (Y), (X), (STRING)[0]);                                       \
+for (__internal_i = 1; __internal_i < (LENGTH)-1; __internal_i++)       \
+  Lcd_Chr_Cp ((STRING)[__internal_i]);                                  \
+
 char menuSelection = 0;
 char prevMenuSelection = 0;
 
@@ -13,27 +20,18 @@ void loadMenu () {
   char menuTitlePos = lcdWidth/2-menuTitleLength/2;
 
   Lcd_Cmd(_LCD_CLEAR);
-
-  //Lcd_Out (1, menuTitlePos, menuTitle);
-  Lcd_Chr(1, menuTitlePos, menuTitle[0]);
-  for (i = 1; i < menuTitleLength-1; i++) {
-    Lcd_Chr_Cp(menuTitle[i]);
-  }
+  __PRINT(1, menuTitlePos, menuTitle, menuTitleLength);
 }
 
 void printSelectableLevels(char start) {
   static const char levelsTextIndent = 4;
-  char i, j;
+  char i;
   char levelsToPrint = min(levelCount, 3);
   char baseString[] = "Level ";
   char numChars = sizeof(baseString)/sizeof(baseString[0]);
 
   for (i = 0; i < levelsToPrint; i++) {
-    // Print level
-    Lcd_Chr ( 2+i, levelsTextIndent, baseString[0]);
-    for (j = 1; j < numChars-1; j++)
-      Lcd_Chr_Cp (baseString[j]);
-
+    __PRINT(2+i, levelsTextIndent, baseString, numChars)
     Lcd_Chr_Cp (start+i+1+'0');
   }
 }

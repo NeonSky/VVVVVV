@@ -28,11 +28,12 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=4
+Count=5
 File0=gamecode.c
 File1=levels.h
 File2=..\..\..\.wine\drive_c\users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\__Lib_Delays.c
 File3=menu.c
+File4=player.c
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]

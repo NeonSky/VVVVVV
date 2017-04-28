@@ -4,6 +4,7 @@
 #include "levels.h"
 #include "player.h"
 
+// Holds current game state
 GameState gameState = ST_MENU;
 
 // Function declarations
