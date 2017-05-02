@@ -18,7 +18,6 @@ struct Player {
 };
 extern struct Player player;
 
-
 /*
     Functions
 */
@@ -29,7 +28,6 @@ void checkAirborne(signed char gravityDir);
 void clampPlayerPos();
 void playerDied();
 void checkCurTile();
-
 
 /*
     Constants

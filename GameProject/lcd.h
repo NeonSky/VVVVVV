@@ -19,19 +19,17 @@ sbit LCD_D5_Direction at TRISB1_bit;
 sbit LCD_D6_Direction at TRISB2_bit;
 sbit LCD_D7_Direction at TRISB3_bit;
 
-
 /*
     Functions
 */
 void initLCD();
 
-
 /*
     Constants
 */
-static const char lcdWidth = 20; // Width of LCD, measured in cells
-static const char lcdHeight = 4; // Height of LCD, measured in cells
-static const char lcdCharLength = 8; // Bytes to store a custom char
+static const char lcdWidth = 20;        // Width of LCD, measured in cells
+static const char lcdHeight = 4;        // Height of LCD, measured in cells
+static const char lcdCharLength = 8;    // Bytes to store a custom char
 static const char charEntryMemory = 64; // Memory to overwrite for custom chars
 
 #endif

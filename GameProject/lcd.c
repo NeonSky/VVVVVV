@@ -10,8 +10,8 @@ void initLCD() {
 
   // Load custom characters to memory
   Lcd_Cmd(charEntryMemory + lcdCharLength);
-  for(i = 0; i < tileCount; i++) {
-    for(j = 0; j < lcdCharLength; j++) {
+  for (i = 0; i < tileCount; i++) {
+    for (j = 0; j < lcdCharLength; j++) {
       Lcd_Chr_Cp(tileSprites[i][j]);
     }
   }
