@@ -94,7 +94,7 @@ void updatePlayerSprite() {
     combinedTile[i] = playerSprites[playerSprite][i] | tileSprites[tileId][i];
   }
 
-  // Write combined tile to memory
+  // Write combined tile to LCD display's CGRAM
   Lcd_Cmd(charEntryMemory);
   for (i = 0; i < lcdCharLength; i++) {
     Lcd_Chr_Cp(combinedTile[i]);

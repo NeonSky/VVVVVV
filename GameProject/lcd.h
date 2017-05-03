@@ -22,6 +22,8 @@ sbit LCD_D7_Direction at TRISB3_bit;
 /*
     Functions
 */
+
+// Initializes the LCD display and loads all custom tiles to LCD display's CGRAM
 void initLCD();
 
 /*

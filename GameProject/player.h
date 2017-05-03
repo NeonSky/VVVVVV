@@ -12,21 +12,36 @@ sbit gravityBtn at PORTC.B5;
 sbit leftBtn at PORTC.B6;
 sbit rightBtn at PORTC.B7;
 
+// Datastructure to represents the player
 struct Player {
   char x, y;
   char isAirborne, isFaceUp;
 };
+// Holds global player object
 extern struct Player player;
 
 /*
     Functions
 */
+
+// Initializes player at the given position and direction
 void initPlayer(char x, char y, char faceUp);
+
+// Polls user input and moves player accordingly if the level permits it
+//  i.e. no blocking tiles.
 void movePlayer();
+
+// Renders player to LCD display with combined tile
 void updatePlayerSprite();
+
+// Determines whether the player is airborne or not
 void checkAirborne(signed char gravityDir);
+
+// Clamps player position within LCD bounds
 void clampPlayerPos();
-void playerDied();
+
+// Based on players current position - determine any action associated with the tile
+//  i.e. spike => ST_GAMEOVER
 void checkCurTile();
 
 /*

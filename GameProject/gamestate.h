@@ -1,6 +1,7 @@
 #ifndef GAME_STATE_H_
 #define GAME_STATE_H_
 
+// Enumeration describing all possible game states
 typedef enum GameState {
   ST_MENU,
   ST_PAUSE,

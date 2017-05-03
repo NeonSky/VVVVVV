@@ -6,50 +6,25 @@
 /*
     Functions
 */
+
+// Loads and draws level to LCD
+//  where levelIndex indicates the level to display
 void loadLevel(char levelIndex);
+
+// Loads and displays tile
 char loadTile(char x, char y);
+
+// Returns the id (see enum Tile) of the tile at the given position
 short getTileId(char x, char y);
+
+// Performs check if the tile at the given position is travsersable or not
+//  Returns 1 if travsersable
+//  Returns 0 if not travsersable
 char isTraversable(char x, char y);
 
 /*
     Constants
 */
-static char curLevel = 0;
-static const char levels[][lcdHeight * 2][lcdWidth] = {
-    // Level 1
-    {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, // Row 1 (upper)
-     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Row 1 (lower)
-
-     {1, 1, 1, 1, 1, 1, 1, 1, 3, 3,
-      3, 3, 1, 1, 1, 1, 1, 1, 1, 0}, // Row 2 (upper)
-     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Row 2 (lower)
-
-     {0, 0, 0, 0, 0, 0, 0, 1, 1, 1,
-      1, 1, 1, 1, 1, 1, 3, 3, 1, 1}, // Row 3 (upper)
-     {0, 2, 2, 2, 2, 2, 2, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Row 3 (lower)
-
-     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 6, 1}, // Row 4 (upper)
-     {2, 2, 0, 0, 0, 0, 2, 2, 2, 2,
-      2, 2, 4, 4, 4, 2, 2, 2, 2, 2}}, // Row 4 (lower)
-
-    // Level 2
-    {{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
-     {6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-
-     {3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 3, 3, 3, 3, 3, 3, 3, 3},
-     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-
-     {0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 3, 3},
-     {0, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-
-     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7},
-     {3, 3, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 4, 4, 4, 3, 3, 3, 3, 3}}};
-static const char levelCount = sizeof(levels) / sizeof(levels[0]);
 
 // Tiles used in the game
 enum Tile {
@@ -63,7 +38,51 @@ enum Tile {
   goal = 6
 };
 
+// Holds index of the currently drawn level
+static char curLevel = 0;
+
+// This array stores each level and their composition of tiles
+//   The values represents a tile according to the Tile enum
+static const char levels[][lcdHeight * 2][lcdWidth] = {
+    // Level 1
+    {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+
+     {1, 1, 1, 1, 1, 1, 1, 1, 3, 3,
+      3, 3, 1, 1, 1, 1, 1, 1, 1, 0},
+     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+
+     {0, 0, 0, 0, 0, 0, 0, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 3, 3, 1, 1},
+     {0, 2, 2, 2, 2, 2, 2, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+
+     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 6, 1},
+     {2, 2, 0, 0, 0, 0, 2, 2, 2, 2,
+      2, 2, 4, 4, 4, 2, 2, 2, 2, 2}},
+
+    // Level 2
+    {{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+     {6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+
+     {3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 3, 3, 3, 3, 3, 3, 3, 3},
+     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+
+     {0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 3, 3},
+     {0, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+
+     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7},
+     {3, 3, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 4, 4, 4, 3, 3, 3, 3, 3}}};
+
+static const char levelCount = sizeof(levels) / sizeof(levels[0]);
+
 // Tile sprites, used to represent the various of tiles on the LCD
+//  where the index of each tile follows the layout of the Tile enum.
+//  Also used for combining new temporary tile with the player sprite
 static const char tileSprites[][lcdCharLength] = {
   // Air
   {0b00000000,
