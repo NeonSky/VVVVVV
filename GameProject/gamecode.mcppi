@@ -6,7 +6,7 @@ Value=-1
 [BUILD_TYPE]
 Value=0
 [ACTIVE_TAB]
-Value=gamecode.c
+Value=levels.h
 [USE_EEPROM]
 Value=0
 [USE_HEAP]
@@ -28,13 +28,14 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=6
+Count=7
 File0=gamecode.c
 File1=levels.h
 File2=menu.c
 File3=player.c
 File4=levels.c
 File5=lcd.c
+File6=player.h
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]

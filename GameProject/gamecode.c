@@ -17,7 +17,7 @@ GameState gameState = ST_MENU;
 
 /* delay between each update();
 Can definitly be lower, but it's quite high due to better user experience. */
-static const char updateInterval = 100;
+static const char updateInterval = 75;
 
 
 // Initializes all hardware including the PIC and the LCD

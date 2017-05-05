@@ -118,7 +118,14 @@ void checkCurTile() {
   if (tileId == goal) {
     changeGameState(ST_GOAL);
   }
-  else if (tileId == spikeU || tileId == spikeD) {
+  else if (tileId == spikeUU || tileId == spikeLU || tileId == spikeUD || tileId == spikeLD) {
     changeGameState(ST_GAMEOVER);
   }
+}
+
+char isTraversable(char x, char y) {
+  char tileId = getTileId(x, y);
+  return (tileId == air || tileId == start || tileId == goal ||
+          ((tileId == spikeUU || tileId == spikeLU) && player.isFaceUp) ||
+          ((tileId == spikeUD || tileId == spikeLD) && !player.isFaceUp));
 }

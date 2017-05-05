@@ -37,12 +37,12 @@ char loadTile(char x, char y) {
   char upperTile = levels[curLevel][2 * (y - 1)][x - 1];
   char lowerTile = levels[curLevel][2 * (y - 1) + 1][x - 1];
   char priorityTile = max(upperTile, lowerTile);
+  char minTile = min(upperTile, lowerTile);
 
-  if (priorityTile == start) {
-    Lcd_Chr(y, x, 1 + min(upperTile, lowerTile));
-  }
-  else {
-    Lcd_Chr(y, x, 1 + priorityTile);
+  if(priorityTile == air || priorityTile == start) {
+    Lcd_Chr(y, x, ' ');
+  } else {
+    Lcd_Chr(y, x, priorityTile);
   }
   return priorityTile;
 }
@@ -52,10 +52,4 @@ short getTileId(char x, char y) {
     return -1;
   }
   return levels[curLevel][y - 1][x - 1];
-}
-
-char isTraversable(char x, char y) {
-  char tileId = getTileId(x, y);
-  return (tileId == air || tileId == start || tileId == goal ||
-          tileId == spikeU || tileId == spikeD);
 }

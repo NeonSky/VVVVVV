@@ -44,6 +44,11 @@ void clampPlayerPos();
 //  i.e. spike => ST_GAMEOVER
 void checkCurTile();
 
+// Performs check if the tile at the given position is travsersable or not
+//  Returns 1 if travsersable
+//  Returns 0 if not travsersable
+char isTraversable(char x, char y);
+
 /*
     Constants
 */

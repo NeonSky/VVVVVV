@@ -17,25 +17,22 @@ char loadTile(char x, char y);
 // Returns the id (see enum Tile) of the tile at the given position
 short getTileId(char x, char y);
 
-// Performs check if the tile at the given position is travsersable or not
-//  Returns 1 if travsersable
-//  Returns 0 if not travsersable
-char isTraversable(char x, char y);
-
 /*
     Constants
 */
 
 // Tiles used in the game
 enum Tile {
+  start = -2,
   undefined = -1,
   air = 0,
   halfBlockU = 1,
   halfBlockL = 2,
-  spikeU = 3,
-  spikeD = 4,
-  start = 5,
-  goal = 6
+  spikeUU = 3,
+  spikeLU = 4,
+  spikeUD = 5,
+  spikeLD = 6,
+  goal = 7
 };
 
 // Holds index of the currently drawn level
@@ -45,16 +42,16 @@ extern char curLevel;
 //   The values represents a tile according to the Tile enum
 static const char levels[][lcdHeight * 2][lcdWidth] = {
     // Level 1
-    {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-
-     {1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 0},
+    {{1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5, 1, 1, 1, 1, 1, 1, 1},
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 
-     {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1},
+     {1, 1, 1, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
+     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0},
+
+     {0, 0, 0, 0, 0, 0, 0, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1},
      {0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 
-     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 1},
+     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0},
      {2, 2, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 4, 4, 4, 2, 2, 2, 2, 2}},
 
     // Level 2
@@ -77,6 +74,7 @@ static const char levelCount = sizeof(levels) / sizeof(levels[0]);
 //  where the index of each tile follows the layout of the Tile enum.
 //  Also used for combining new temporary tile with the player sprite
 static const char tileSprites[][lcdCharLength] = {
+
   // Air
   {0b00000000,
    0b00000000,
@@ -107,17 +105,17 @@ static const char tileSprites[][lcdCharLength] = {
    0b00011111,
    0b00011111},
 
-  // Spike, upper
-  {0b00011111,
-   0b00001110,
+  // Spike, upper, face-up
+  {0b00000000,
    0b00000100,
-   0b00000000,
+   0b00001110,
+   0b00011111,
    0b00000000,
    0b00000000,
    0b00000000,
    0b00000000},
 
-  // Spike, lower
+  // Spike, lower, face-up
   {0b00000000,
    0b00000000,
    0b00000000,
@@ -126,15 +124,25 @@ static const char tileSprites[][lcdCharLength] = {
    0b00000100,
    0b00001110,
    0b00011111},
-
-  // Start
+   
+  // Spike, upper, face-down
+  {0b00011111,
+   0b00001110,
+   0b00000100,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000,
+   0b00000000},
+   
+  // Spike, lower, face-down
   {0b00000000,
    0b00000000,
    0b00000000,
    0b00000000,
-   0b00000000,
-   0b00000000,
-   0b00000000,
+   0b00011111,
+   0b00001110,
+   0b00000100,
    0b00000000},
 
   // Goal

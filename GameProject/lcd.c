@@ -11,7 +11,7 @@ void initLCD() {
 
   // Load custom characters to display's CGRAM
   Lcd_Cmd(charEntryMemory + lcdCharLength);
-  for (i = 0; i < tileCount; i++) {
+  for (i = 1; i < tileCount; i++) {
     for (j = 0; j < lcdCharLength; j++) {
       Lcd_Chr_Cp(tileSprites[i][j]);
     }
