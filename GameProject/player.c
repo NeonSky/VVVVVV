@@ -68,6 +68,8 @@ void updatePlayerSprite() {
   short tileId = getTileId(player.x, player.y - 1 + 2*(player.y % 2));
   char playerSprite;
   char combinedTile[lcdCharLength];
+  
+  if(tileId == start) { tileId = air; }
 
   if (player.y % 2 == 0) {
     if (player.isFaceUp) {

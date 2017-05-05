@@ -20,8 +20,7 @@ void loadLevel(char levelIndex) {
         if (levels[curLevel][2 * i][j] == start) {
           playerX = j + 1;
           playerY = 2 * i + 1;
-        }
-        else {
+        } else {
           playerX = j + 1;
           playerY = (2 * i) + 2;
         }
@@ -39,11 +38,13 @@ char loadTile(char x, char y) {
   char priorityTile = max(upperTile, lowerTile);
   char minTile = min(upperTile, lowerTile);
 
-  if(priorityTile == air || priorityTile == start) {
+  if(priorityTile == air) {
     Lcd_Chr(y, x, ' ');
   } else {
     Lcd_Chr(y, x, priorityTile);
   }
+  
+  if(minTile == start) { return minTile; }
   return priorityTile;
 }
 
