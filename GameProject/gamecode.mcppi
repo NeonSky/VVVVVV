@@ -28,12 +28,13 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=5
+Count=6
 File0=gamecode.c
 File1=levels.h
-File2=..\..\..\.wine\drive_c\users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\__Lib_Delays.c
-File3=menu.c
-File4=player.c
+File2=menu.c
+File3=player.c
+File4=levels.c
+File5=lcd.c
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]
@@ -41,13 +42,15 @@ Count=0
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
-Count=3
-Path0=Z:\home\batman\.wine\drive_c\users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Defs\
-Path1=Z:\home\batman\.wine\drive_c\users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\
-Path2=Z:\home\batman\git\VVVVVV\GameProject\
+Count=8
+Path0=C:\Users\Deltagare\Documents\Mikroelektronika\mikroC PRO for PIC\Defs\
+Path1=C:\Users\Deltagare\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\
+Path2=C:\Users\Deltagare\Documents\GitHub\VVVVVV\GameProject\
+Path3=C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\defs\
+Path4=C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\Uses\P16\
 [HEADER_PATH]
-Count=1
-Path0=Z:\home\batman\git\VVVVVV\GameProject\
+Count=2
+Path1=C:\Users\Deltagare\Documents\GitHub\VVVVVV\GameProject\
 [HEADERS]
 Count=0
 [PLDS]

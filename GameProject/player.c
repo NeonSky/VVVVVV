@@ -15,11 +15,6 @@ void movePlayer() {
   signed char gravityDir = player.isFaceUp == 1 ? 1 : -1;
   checkAirborne(gravityDir);
 
-  /*lcd_chr(4, 14, '0'+player.x);
-  lcd_chr(4, 16, '0'+player.y);
-  lcd_chr(4, 18, '0'+player.isAirborne);
-  lcd_chr(4, 20, '0'+player.isFaceUp);*/
-
   // Clear player sprite
   loadTile(player.x, (player.y - 1) / 2 + 1);
 
@@ -40,6 +35,7 @@ void movePlayer() {
     }
     else if (gravityBtn) {
       player.isFaceUp = !player.isFaceUp;
+      delay_ms(50);
     }
   }
 
@@ -68,7 +64,8 @@ void updatePlayerSprite() {
   char i;
 
   short gravityDir = (player.isFaceUp == 1) ? -1 : 1;
-  short tileId = getTileId(player.x, player.y - (1 - player.y % 2));
+  // Get the tile id of the tile that the player shares the same LCD cell with
+  short tileId = getTileId(player.x, player.y - 1 + 2*(player.y % 2));
   char playerSprite;
   char combinedTile[lcdCharLength];
 

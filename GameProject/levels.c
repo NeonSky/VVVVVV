@@ -2,6 +2,8 @@
 #include "gamestate.h"
 #include "player.h"
 
+char curLevel = -1;
+
 // Displays a level to the LCD
 void loadLevel(char levelIndex) {
   char i, j, tile, playerX = 1, playerY = 1;

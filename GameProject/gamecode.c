@@ -15,8 +15,9 @@
 // Holds current game state - holds a value described in gamestate.h
 GameState gameState = ST_MENU;
 
-// delay between each update();
-static const char updateInterval = 50;
+/* delay between each update();
+Can definitly be lower, but it's quite high due to better user experience. */
+static const char updateInterval = 100;
 
 
 // Initializes all hardware including the PIC and the LCD
@@ -28,6 +29,12 @@ void initPIC();
 // Function used for changing the current game state and any initialization
 //    required between game state changes.
 void changeGameState(GameState newState);
+
+// Shortly shows the game over screen on the LCD. Called when the player dies.
+void showGameOverScreen();
+
+// Shortly shows the win screen on the LCD. Called when the last level is beat.
+void showWinScreen();
 
 // Game loop, called every updateInterval
 //  Updates game state specific code
@@ -71,6 +78,7 @@ void changeGameState(GameState newState) {
 
   // If we're transitioning to Menu state - initialize menu
   if (newState == ST_MENU) {
+    curLevel = -1;
     loadMenu();
     // Print selectable levels 0-3 ( needed here because of limited call stack )
     printSelectableLevels(0);
@@ -91,6 +99,7 @@ void update() {
     break;
 
   case ST_PAUSE:
+    // Not implemented yet, but a pause screen could be displayed here.
     break;
 
   case ST_GOAL:
@@ -98,15 +107,31 @@ void update() {
     // if not - transition to menu state
     if (curLevel + 1 < levelCount) {
       loadLevel(curLevel + 1);
+      //curLevel++;
     } else {
+      showWinScreen();
       changeGameState(ST_MENU);
     }
     break;
 
   case ST_GAMEOVER:
-    // TODO: Play gameover scene
+    showGameOverScreen();
     changeGameState(ST_MENU);
     break;
   }
   delay_ms(updateInterval);
+}
+
+void showGameOverScreen() {
+  Lcd_Cmd(_LCD_CLEAR);
+  Lcd_Out(2, 5, "Game Over =(");
+  Lcd_Out(3, 6, "Try again!");
+  delay_ms(5000);
+}
+
+void showWinScreen() {
+  Lcd_Cmd(_LCD_CLEAR);
+  Lcd_Out(2, 3, "Congratulations!");
+  Lcd_Out(3, 2, "Thanks for playing");
+  delay_ms(5000);
 }
